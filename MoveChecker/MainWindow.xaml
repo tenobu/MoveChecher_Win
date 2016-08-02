@@ -1,18 +1,22 @@
 ﻿<Window x:Class="MoveChecker.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="525"
+        Loaded="Window_Loaded" Closing="Window_Closing">
+    
     <Grid>
+        
         <Label Content="From" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Image Name="image_FromFolder"
+        
+        <Image Name="image_From_Folder"
                HorizontalAlignment="Left" Height="23" Margin="15,43,0,0" VerticalAlignment="Top" Width="23"
-               Source="Images\folder.png" Drop="Image_Drop" AllowDrop="true"/>
-        <Label Name="label_FromFolder"
+               Source="Images\folder.png" Drop="image_From_Drop" AllowDrop="true"/>
+        <Label Name="label_From_Folder"
                Content="C:\" Height="23" Margin="43,43,90,0" VerticalAlignment="Top" FontFamily="Calibri"
-               Drop="Image_Drop" AllowDrop="True"/>
-        <Button Name="button_FromFolder"
+               Drop="image_From_Drop" AllowDrop="True"/>
+        <Button Name="button_From_Folder"
                 Width="75" Margin="0,43,10,0" HorizontalAlignment="Right" Height="23" VerticalAlignment="Top"
-                Click="button_FromFolder_Click">
+                Click="button_From_Folder_Click">
             <StackPanel  Orientation="Horizontal">
                 <Image Source="Images/folder.png"/>
                 <TextBlock Text=" Folder" VerticalAlignment="Center"/>
@@ -21,6 +25,36 @@
         <Label Content="FilesSize" HorizontalAlignment="Left" Margin="43,66,0,0" VerticalAlignment="Top" Width="64"/>
         <Label Name="label_From_FilesSize"
                Content="0 Byte" Margin="112,66,10,0" VerticalAlignment="Top"/>
+        
+        <Label Content="To" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
+        
+        <Image Name="image_To_Folder"
+               HorizontalAlignment="Left" Height="23" Margin="15,161,0,0" VerticalAlignment="Top" Width="23"
+               Source="Images/folder.png" Drop="image_To_Drop" AllowDrop="true"/>
+        <Label Name="label_To_Folder"
+        	Content="C:\" Height="23" Margin="43,161,90,0" VerticalAlignment="Top" FontFamily="Calibri"
+        	Drop="image_To_Drop" AllowDrop="True"/>
+        <Button Name="button_To_Folder"
+        	Width="75" Margin="0,161,10,0" HorizontalAlignment="Right" Height="23" VerticalAlignment="Top"
+        	Click="button_To_Folder_Click">
+            <StackPanel  Orientation="Horizontal">
+                <Image Source="Images/folder.png"/>
+                <TextBlock Text=" Folder" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
+        <Label Content="FilesSize" HorizontalAlignment="Left" Margin="43,189,0,0" VerticalAlignment="Top" Width="64"/>
+        <Label Name="label_To_FilesSize"
+               Content="0 Byte" Margin="112,189,10,0" VerticalAlignment="Top"/>
+
+        <Image Name="image_Equals"
+               HorizontalAlignment="Left" Height="23" Margin="134,115,0,0" VerticalAlignment="Top" Width="23"
+               Source="Images/equals.png" Visibility="Hidden"/>
+        <Image Name="image_NotEquals"
+               HorizontalAlignment="Left" Height="23" Margin="134,115,0,0" VerticalAlignment="Top" Width="23"
+               Source="Images/not_equals.png" Visibility="Visible"/>
+        <Label Name="label_Hantei"
+               Content="Hantei ?" FontSize="25" FontWeight="Bold"
+               HorizontalAlignment="Left" Margin="162,104,0,0" VerticalAlignment="Top" Width="189"/>
 
     </Grid>
 </Window>

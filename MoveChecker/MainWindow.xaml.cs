@@ -26,7 +26,7 @@ namespace MoveChecker
 	{
 		private List<FileInfo> filesList = new List<FileInfo>();
 
-		private File_Finds file_Finds = null;
+		private bool bool_Hantei = false;
 
 
 		public MainWindow()
@@ -42,31 +42,37 @@ namespace MoveChecker
 			this.Width = Properties.Settings.Default.WindowWidth;
 			this.Height = Properties.Settings.Default.WindowHeight;
 
-			this.label_FromFolder.Content = Properties.Settings.Default.FindFolder;
-			//this.comboBox_FindFile.Text = Properties.Settings.Default.FindFile;
+			this.label_From_Folder.Content = Properties.Settings.Default.FromFolder;
+			this.label_To_Folder.Content = Properties.Settings.Default.ToFolder;
 
-			file_Finds = File_Finds.FileLoad("FindFiles.xml");
-
-			//GetFileFindsSort();
-
-			// FindFolderが何も無かったら、
-			if (label_FromFolder.Content.Equals(""))
+			// FromFolderが何も無かったら、
+			if (label_From_Folder.Content.Equals(""))
 			{
-				// FindFolderに初期値を送る
-				label_FromFolder.Content = "C:\\";
+				// FromFolderに初期値を送る
+				label_From_Folder.Content = "無し";
 			}
 
-			/*if (comboBox_FindFile.Text.Equals(""))
+			// ToFolderが何も無かったら、
+			if (label_To_Folder.Content.Equals(""))
 			{
-				button_FileFind.IsEnabled = false;
-			}
-			else
-			{
-				button_FileFind.IsEnabled = true;
+				// ToFolderに初期値を送る
+				label_To_Folder.Content = "無し";
 			}
 
-			button_Copy.IsEnabled = false;
-			button_AddressCopy.IsEnabled = false;*/
+			if (label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し") == false)
+			{
+				SetFromToHantei();
+			}
+			else if (
+				label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し"))
+			{
+				SetFromHantei();
+			}
+			else if (
+				label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し") == false)
+			{
+				SetToHantei();
+			}
 		}
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -81,17 +87,14 @@ namespace MoveChecker
 			}
 
 			// 設定にフォルダ名を書き込む。
-			Properties.Settings.Default.FindFolder = (string)this.label_FromFolder.Content;
-			//Properties.Settings.Default.FindFile = this.comboBox_FindFile.Text;
+			Properties.Settings.Default.FromFolder = (string)this.label_From_Folder.Content;
+			Properties.Settings.Default.ToFolder = (string)this.label_To_Folder.Content;
 
 			// 設定に送ったものをセーブ。
 			Properties.Settings.Default.Save();
-
-			// 設定ファイルを、指定した文字列にセーブする
-			File_Finds.FileSave("FindFiles.xml", file_Finds);
 		}
 
-		private void button_FindFolder_Click(object sender, RoutedEventArgs e)
+		private void button_From_Folder_Click(object sender, RoutedEventArgs e)
 		{
 			{
 				// フォルダブラウザーダイアログ
@@ -101,7 +104,7 @@ namespace MoveChecker
 
 				fbd.RootFolder = Environment.SpecialFolder.Desktop;
 
-				fbd.SelectedPath = (string)label_FromFolder.Content;
+				fbd.SelectedPath = (string)label_From_Folder.Content;
 
 				fbd.ShowNewFolderButton = true;
 
@@ -109,55 +112,210 @@ namespace MoveChecker
 
 				if (result == win.DialogResult.OK)
 				{
-					label_FromFolder.Content = fbd.SelectedPath;
+					label_From_Folder.Content = fbd.SelectedPath;
 				}
 			}
 		}
 
-		/*private void button_FileFind_Click(object sender, RoutedEventArgs e)
-		{
-			file_Finds.Add(comboBox_FindFile.Text);
-
-			GetFileFindsSort();
-
-			ToFindFolder();
-		}*/
-
-		private void textBox_FindFile_KeyDown(object sender, KeyEventArgs e)
-		{
-		}
-
-		private void textBox_FindFile_KeyUp(object sender, KeyEventArgs e)
-		{
-		}
-
-		private void Image_Drop(object sender, DragEventArgs e)
+		private void image_From_Drop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
 				// Note that you can have more than one file.
 				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-				label_FromFolder.Content = files[0];
+				label_From_Folder.Content = files[0];
 
-				var info  = new FileSystemInfo((string)label_FromFolder.Content);
-
-				var size = SetFilesSize(new DirectoryInfo((string)label_FromFolder.Content));
-
-				label_From_FilesSize.Content = size.ToString("#,#0 Byte");
+				SetFromHantei();
 			}
 		}
 
-		private long SetFilesSize(DirectoryInfo dir)
+		private void image_To_Drop(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				// Note that you can have more than one file.
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+				label_To_Folder.Content = files[0];
+
+				SetToHantei();
+			}
+		}
+
+		private void SetFromToHantei()
 		{
 			var size = 0L;
 
-			foreach (var file_c in dir.GetFiles())
+			if (IsDirectory((string)label_From_Folder.Content))
+			{
+				size = SetFilesSize(new DirectoryInfo((string)label_From_Folder.Content));
+			}
+			else
+			{
+				size = SetFileSize(new FileInfo((string)label_From_Folder.Content));
+			}
+
+			label_From_FilesSize.Content = size.ToString("#,#0 Byte");
+
+			
+			size = 0L;
+
+			if (IsDirectory((string)label_To_Folder.Content))
+			{
+				size = SetFilesSize(new DirectoryInfo((string)label_To_Folder.Content));
+			}
+			else
+			{
+				size = SetFileSize(new FileInfo((string)label_To_Folder.Content));
+			}
+
+			label_To_FilesSize.Content = size.ToString("#,#0 Byte");
+
+			
+			SetHantei();
+		}
+
+		private void SetFromHantei()
+		{
+			var size = 0L;
+
+			if (IsDirectory((string)label_From_Folder.Content))
+			{
+				size = SetFilesSize(new DirectoryInfo((string)label_From_Folder.Content));
+			}
+			else
+			{
+				size = SetFileSize(new FileInfo((string)label_From_Folder.Content));
+			}
+
+			label_From_FilesSize.Content = size.ToString("#,#0 Byte");
+
+			SetHantei();
+		}
+
+		private void SetToHantei()
+		{
+			var size = 0L;
+
+			if (IsDirectory((string)label_To_Folder.Content))
+			{
+				size = SetFilesSize(new DirectoryInfo((string)label_To_Folder.Content));
+			}
+			else
+			{
+				size = SetFileSize(new FileInfo((string)label_To_Folder.Content));
+			}
+
+			label_To_FilesSize.Content = size.ToString("#,#0 Byte");
+
+			SetHantei();
+		}
+
+		private void SetHantei()
+		{
+			if (label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し") == false)
+			{
+				if (CheckDirFiles())
+				{
+					image_Equals.Visibility = Visibility.Visible;
+					image_NotEquals.Visibility = Visibility.Hidden;
+
+					if (IsDirectory((string)label_From_Folder.Content))
+					{
+						label_Hantei.Content = "同じ内容のフォルダ！！";
+					}
+					else
+					{
+						label_Hantei.Content = "同じ内容のファイル！！";
+					}
+				}
+				else
+				{
+					image_Equals.Visibility = Visibility.Hidden;
+					image_NotEquals.Visibility = Visibility.Visible;
+
+					if (IsDirectory((string)label_From_Folder.Content))
+					{
+						label_Hantei.Content = "違う内容のフォルダ！！";
+					}
+					else
+					{
+						label_Hantei.Content = "違う内容のファイル！！";
+					}
+				}
+			}
+			else if (
+				label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し") == false)
+			{
+				{
+					image_Equals.Visibility = Visibility.Hidden;
+					image_NotEquals.Visibility = Visibility.Visible;
+
+					if (IsDirectory((string)label_To_Folder.Content))
+					{
+						label_Hantei.Content = "違う内容のフォルダ！！";
+					}
+					else
+					{
+						label_Hantei.Content = "違う内容のファイル！！";
+					}
+				}
+			}
+			else if (
+				label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し"))
+			{
+				{
+					image_Equals.Visibility = Visibility.Hidden;
+					image_NotEquals.Visibility = Visibility.Visible;
+
+					if (IsDirectory((string)label_From_Folder.Content))
+					{
+						label_Hantei.Content = "違う内容のフォルダ！！";
+					}
+					else
+					{
+						label_Hantei.Content = "違う内容のファイル！！";
+					}
+				}
+			}
+			else if (
+				label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し"))
+			{
+				{
+					image_Equals.Visibility = Visibility.Hidden;
+					image_NotEquals.Visibility = Visibility.Visible;
+
+					label_Hantei.Content = "設定が無い！！";
+				}
+			}
+		}
+
+		private bool CheckDirFiles()
+		{
+			return false;
+		}
+
+		private bool IsDirectory(string dir_path)
+		{
+			if ((File.GetAttributes(dir_path) & FileAttributes.Directory) == FileAttributes.Directory)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		private long SetFilesSize(DirectoryInfo di)
+		{
+			var size = 0L;
+
+			foreach (var file_c in di.GetFiles())
 			{
 				size += file_c.Length;
 			}
 
-			foreach (var dic_c in dir.GetDirectories())
+			foreach (var dic_c in di.GetDirectories())
 			{
 				size += SetFilesSize(dic_c);
 			}
@@ -165,303 +323,26 @@ namespace MoveChecker
 			return size;
 		}
 
-		private void button_FromFolder_Click(object sender, RoutedEventArgs e)
+		private long SetFileSize(FileInfo fi)
+		{
+			var size = fi.Length;
+
+			return size;
+		}
+
+		private void image_From_Folder_Drop(object sender, DragEventArgs e)
 		{
 
 		}
 
-		/*private void comboBox_FindFile_KeyUp(object sender, KeyEventArgs e)
-		{
-			if (comboBox_FindFile.Text.Equals(""))
-			{
-				button_FileFind.IsEnabled = false;
-			}
-			else
-			{
-				button_FileFind.IsEnabled = true;
-			}
-
-			if (button_FileFind.IsEnabled)
-			{
-				// キーUPのKeyがEnterの時
-				if (e.Key == Key.Enter)
-				{
-					file_Finds.Add(comboBox_FindFile.Text);
-
-					GetFileFindsSort();
-
-					ToFindFolder();
-				}
-			}
-		}*/
-
-		/*private void listBox_Find_MouseUp(object sender, MouseButtonEventArgs e)
-		{
-			if (listBox_Find.SelectedItems.Count > 0)
-			{
-				label_FindCount.Content = filesList.Count + " of " + listBox_Find.SelectedItems.Count;
-			}
-			else
-			{
-				label_FindCount.Content = filesList.Count;
-			}
-
-			if (listBox_Find.Items.Count == 0)
-			{
-				button_Copy.IsEnabled = false;
-				button_AddressCopy.IsEnabled = false;
-			}
-			else if (
-				listBox_Find.Items.Count == 1)
-			{
-				button_Copy.IsEnabled = true;
-				button_AddressCopy.IsEnabled = true;
-			}
-			else if (
-				listBox_Find.Items.Count > 1)
-			{
-				if (listBox_Find.SelectedItems.Count == 0)
-				{
-					button_Copy.IsEnabled = false;
-					button_AddressCopy.IsEnabled = false;
-				}
-				else
-				{
-					button_Copy.IsEnabled = true;
-					button_AddressCopy.IsEnabled = true;
-				}
-			}
-		}*/
-
-		/*private void listBox_Find_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-		{
-			// listBox は ListBox のインスタンス
-			object item = listBox_Find.SelectedItem;
-			if (item == null)
-			{
-				// 選択されてない = ダブルクリックもされてないと考える
-				return;
-			}
-			UIElement element = (UIElement)listBox_Find.ItemContainerGenerator.ContainerFromItem(item);
-			if (element.InputHitTest(e.GetPosition(element)) == null)
-			{
-				// ダブルクリックされた IInputElement がない = 別の場所がダブルクリックされた
-				return;
-			}
-			// item がダブルクリックされた
-
-			Files f = (Files)item;
-
-			System.Diagnostics.Process.Start(f.Path);
-		}
-
-		private void button_Show_Click(object sender, RoutedEventArgs e)
-		{
-			var files = new System.Collections.Specialized.StringCollection();
-
-			if (listBox_Find.Items.Count == 1)
-			{
-				files.Add(filesList[0].FullName);
-			}
-			else if (
-				listBox_Find.SelectedItems.Count > 0)
-			{
-				foreach (var item in listBox_Find.SelectedItems)
-				{
-					files.Add(((Files)item).Path);
-				}
-			}
-
-			Clipboard.SetFileDropList(files);
-		}
-
-		private void button_Copy_Click(object sender, RoutedEventArgs e)
-		{
-			var files = new System.Collections.Specialized.StringCollection();
-
-			if (listBox_Find.Items.Count == 1)
-			{
-				files.Add(filesList[0].FullName);
-			}
-			else if (
-				listBox_Find.SelectedItems.Count > 0)
-			{
-				foreach (var item in listBox_Find.SelectedItems)
-				{
-					files.Add(((Files)item).Path);
-				}
-			}
-
-			Clipboard.SetFileDropList(files);
-		}
-
-		private void button_AddressCopy_Click(object sender, RoutedEventArgs e)
-		{
-			if (listBox_Find.Items.Count == 1)
-			{
-				Clipboard.SetText(filesList[0].FullName);
-			}
-			else if (
-				listBox_Find.SelectedItems.Count > 0)
-			{
-				var text = "";
-
-				foreach (var item in listBox_Find.SelectedItems)
-				{
-					text += ((Files)item).Path + @"\";
-				}
-
-				Clipboard.SetText(text);
-			}
-		}
-
-		private void ToFindFolder()
-		{
-			listBox_Find.Items.Clear();
-
-			filesList = new List<FileInfo>();
-
-			FindFolder(new DirectoryInfo((string)label_FromFolder.Content));
-
-			label_FindCount.Content = filesList.Count;
-
-			if (listBox_Find.Items.Count == 0)
-			{
-				button_Copy.IsEnabled = false;
-				button_AddressCopy.IsEnabled = false;
-			}
-			else if (
-				listBox_Find.Items.Count == 1)
-			{
-				button_Copy.IsEnabled = true;
-				button_AddressCopy.IsEnabled = true;
-			}
-			else if (
-				listBox_Find.Items.Count > 1)
-			{
-				button_Copy.IsEnabled = false;
-				button_AddressCopy.IsEnabled = false;
-			}
-		}
-
-		private void FindFolder(DirectoryInfo di)
-		{
-			var text = comboBox_FindFile.Text;
-
-			try
-			{
-				foreach (var fi in di.GetFiles())
-				{
-					if (fi.Name.StartsWith(text))
-					{
-					}
-
-					var index = fi.Name.IndexOf(text);
-					if (index > -1)
-					{
-						Console.WriteLine(fi.Name);
-
-						filesList.Add(fi);
-
-						var files_ = new Files();
-
-						if (fi.Extension.ToLower().Equals(".bmp") ||
-							fi.Extension.ToLower().Equals(".gif") ||
-							fi.Extension.ToLower().Equals(".jpg") ||
-							fi.Extension.ToLower().Equals(".jpeg") ||
-							fi.Extension.ToLower().Equals(".png") ||
-							fi.Extension.ToLower().Equals(".tiff") ||
-							fi.Extension.ToLower().Equals(".ico"))
-						{
-							files_.Icon = new BitmapImage(new Uri(fi.FullName));
-						}
-						else
-						{
-							files_.Icon = SHFileInfo.GetBitmap(fi.FullName);
-						}
-
-						files_.File = fi.Name;
-						files_.Path = fi.FullName;
-						files_.Size = fi.Length;
-						files_.SizeS = ToString(fi.Length);
-
-						listBox_Find.Items.Add(files_);
-					}
-				}
-
-				foreach (var cdi in di.GetDirectories())
-				{
-					FindFolder(cdi);
-				}
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.Message);
-			}
-		}
-
-		private void button_List_1_Click(object sender, RoutedEventArgs e)
+		private void label_To_Folder_Drop(object sender, DragEventArgs e)
 		{
 
 		}
 
-		private void button_List_2_Click(object sender, RoutedEventArgs e)
+		private void button_To_Folder_Click(object sender, RoutedEventArgs e)
 		{
 
 		}
-
-		private void button_List_3_Click(object sender, RoutedEventArgs e)
-		{
-
-		}
-
-		private string ToString(long length)
-		{
-			if (length < 1000)
-			{
-				return length.ToString("#,0 B");
-			}
-
-			length /= 1000;
-
-			if (length < 1000)
-			{
-				return length.ToString("#,0 KB");
-			}
-
-			length /= 1000;
-
-			if (length < 1000)
-			{
-				return length.ToString("#,0 MB");
-			}
-
-			length /= 1000;
-
-			if (length < 1000)
-			{
-				return length.ToString("#,0 GB");
-			}
-
-			length /= 1000;
-
-			return length.ToString("#,0 TB");
-		}
-
-		private void GetFileFindsSort()
-		{
-			var ff = file_Finds.Finds.OrderByDescending(f => f.Count);
-
-			comboBox_FindFile.ItemsSource = ff;
-		}*/
-	}
-
-	public class Files
-	{
-		public BitmapImage Icon { get; set; }
-		public string File { get; set; }
-		public string Path { get; set; }
-		public long Size { get; set; }
-		public string SizeS { get; set; }
 	}
 }

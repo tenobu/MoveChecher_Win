@@ -25,7 +25,7 @@ namespace MoveChecker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public double WindowLeft {
             get {
                 return ((double)(this["WindowLeft"]));
@@ -37,7 +37,7 @@ namespace MoveChecker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public double WindowTop {
             get {
                 return ((double)(this["WindowTop"]));
@@ -49,7 +49,7 @@ namespace MoveChecker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
         public double WindowWidth {
             get {
                 return ((double)(this["WindowWidth"]));
@@ -61,7 +61,7 @@ namespace MoveChecker.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
         public double WindowHeight {
             get {
                 return ((double)(this["WindowHeight"]));
@@ -74,12 +74,24 @@ namespace MoveChecker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string FindFolder {
+        public string FromFolder {
             get {
-                return ((string)(this["FindFolder"]));
+                return ((string)(this["FromFolder"]));
             }
             set {
-                this["FindFolder"] = value;
+                this["FromFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ToFolder {
+            get {
+                return ((string)(this["ToFolder"]));
+            }
+            set {
+                this["ToFolder"] = value;
             }
         }
     }

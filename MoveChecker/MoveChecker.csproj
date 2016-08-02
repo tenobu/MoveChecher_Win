@@ -103,6 +103,12 @@
     <Resource Include="Images\find.png" />
     <Resource Include="Images\folder.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\equals.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\not_equals.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
