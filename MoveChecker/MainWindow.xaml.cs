@@ -28,6 +28,8 @@ namespace MoveChecker
 
 		private bool bool_Hantei = false;
 
+		private bool bool_WaitFlag = false;
+
 
 		public MainWindow()
 		{
@@ -59,20 +61,11 @@ namespace MoveChecker
 				label_To_Folder.Content = "無し";
 			}
 
-			if (label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し") == false)
-			{
-				SetFromToHantei();
-			}
-			else if (
-				label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し"))
-			{
-				SetFromHantei();
-			}
-			else if (
-				label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し") == false)
-			{
-				SetToHantei();
-			}
+			bool_WaitFlag = false;
+
+			SetNowHantei();
+
+			SetFromToHantei();
 		}
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -100,7 +93,7 @@ namespace MoveChecker
 				// フォルダブラウザーダイアログ
 				win.FolderBrowserDialog fbd = new win.FolderBrowserDialog();
 
-				fbd.Description = "検索するフォルダを指定してください。";
+				fbd.Description = "検索するFromフォルダを指定してください。";
 
 				fbd.RootFolder = Environment.SpecialFolder.Desktop;
 
@@ -112,8 +105,60 @@ namespace MoveChecker
 
 				if (result == win.DialogResult.OK)
 				{
+					SetNowHantei();
+
 					label_From_Folder.Content = fbd.SelectedPath;
+
+					SetFromHantei();
 				}
+			}
+		}
+
+		private void button_To_Folder_Click(object sender, RoutedEventArgs e)
+		{
+			{
+				// フォルダブラウザーダイアログ
+				win.FolderBrowserDialog fbd = new win.FolderBrowserDialog();
+
+				fbd.Description = "検索するToフォルダを指定してください。";
+
+				fbd.RootFolder = Environment.SpecialFolder.Desktop;
+
+				fbd.SelectedPath = (string)label_To_Folder.Content;
+
+				fbd.ShowNewFolderButton = true;
+
+				win.DialogResult result = fbd.ShowDialog();
+
+				if (result == win.DialogResult.OK)
+				{
+					SetNowHantei();
+
+					label_To_Folder.Content = fbd.SelectedPath;
+
+					SetToHantei();
+				}
+			}
+		}
+
+		private void image_From_Over(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+				if (IsDirectory(files[0]))
+				{
+					e.Handled = true;
+				}
+				else
+				{
+					e.Handled = false;
+				}
+			}
+			else
+			{
+				e.Handled = false;
 			}
 		}
 
@@ -121,8 +166,12 @@ namespace MoveChecker
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
+				SetNowHantei();
+
 				// Note that you can have more than one file.
-				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+				if (IsDirectory(files[0]) == false) return;
 
 				label_From_Folder.Content = files[0];
 
@@ -134,8 +183,12 @@ namespace MoveChecker
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
+				SetNowHantei();
+
 				// Note that you can have more than one file.
-				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+				if (IsDirectory(files[0]) == false) return;
 
 				label_To_Folder.Content = files[0];
 
@@ -147,13 +200,12 @@ namespace MoveChecker
 		{
 			var size = 0L;
 
-			if (IsDirectory((string)label_From_Folder.Content))
+			if (((string)label_From_Folder.Content).Equals("無し") == false)
 			{
-				size = SetFilesSize(new DirectoryInfo((string)label_From_Folder.Content));
-			}
-			else
-			{
-				size = SetFileSize(new FileInfo((string)label_From_Folder.Content));
+				if (IsDirectory((string)label_From_Folder.Content))
+				{
+					size = SetFilesSize(new DirectoryInfo((string)label_From_Folder.Content));
+				}
 			}
 
 			label_From_FilesSize.Content = size.ToString("#,#0 Byte");
@@ -161,13 +213,12 @@ namespace MoveChecker
 			
 			size = 0L;
 
-			if (IsDirectory((string)label_To_Folder.Content))
+			if (((string)label_To_Folder.Content).Equals("無し") == false)
 			{
-				size = SetFilesSize(new DirectoryInfo((string)label_To_Folder.Content));
-			}
-			else
-			{
-				size = SetFileSize(new FileInfo((string)label_To_Folder.Content));
+				if (IsDirectory((string)label_To_Folder.Content))
+				{
+					size = SetFilesSize(new DirectoryInfo((string)label_To_Folder.Content));
+				}
 			}
 
 			label_To_FilesSize.Content = size.ToString("#,#0 Byte");
@@ -180,13 +231,12 @@ namespace MoveChecker
 		{
 			var size = 0L;
 
-			if (IsDirectory((string)label_From_Folder.Content))
+			if (((string)label_From_Folder.Content).Equals("無し") == false)
 			{
-				size = SetFilesSize(new DirectoryInfo((string)label_From_Folder.Content));
-			}
-			else
-			{
-				size = SetFileSize(new FileInfo((string)label_From_Folder.Content));
+				if (IsDirectory((string)label_From_Folder.Content))
+				{
+					size = SetFilesSize(new DirectoryInfo((string)label_From_Folder.Content));
+				}
 			}
 
 			label_From_FilesSize.Content = size.ToString("#,#0 Byte");
@@ -198,13 +248,12 @@ namespace MoveChecker
 		{
 			var size = 0L;
 
-			if (IsDirectory((string)label_To_Folder.Content))
+			if (((string)label_To_Folder.Content).Equals("無し") == false)
 			{
-				size = SetFilesSize(new DirectoryInfo((string)label_To_Folder.Content));
-			}
-			else
-			{
-				size = SetFileSize(new FileInfo((string)label_To_Folder.Content));
+				if (IsDirectory((string)label_To_Folder.Content))
+				{
+					size = SetFilesSize(new DirectoryInfo((string)label_To_Folder.Content));
+				}
 			}
 
 			label_To_FilesSize.Content = size.ToString("#,#0 Byte");
@@ -212,87 +261,132 @@ namespace MoveChecker
 			SetHantei();
 		}
 
+		private void SetNowHantei()
+		{
+			var task = Task.Factory.StartNew(() =>
+			{
+				this.label_Hantei.Dispatcher.BeginInvoke(
+					new Action(() =>
+					{
+						image_Hatena.Visibility = Visibility.Visible;
+						image_Equals.Visibility = Visibility.Hidden;
+						image_NotEquals.Visibility = Visibility.Hidden;
+
+						label_Hantei.Content = "フォルダ？をチェック中！！";
+
+						bool_WaitFlag = true;
+					}));
+			});
+		}
+
 		private void SetHantei()
 		{
-			if (label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し") == false)
+			var task = Task.Factory.StartNew(() =>
 			{
-				if (CheckDirFiles())
-				{
-					image_Equals.Visibility = Visibility.Visible;
-					image_NotEquals.Visibility = Visibility.Hidden;
+				loop:
 
-					if (IsDirectory((string)label_From_Folder.Content))
-					{
-						label_Hantei.Content = "同じ内容のフォルダ！！";
-					}
-					else
-					{
-						label_Hantei.Content = "同じ内容のファイル！！";
-					}
-				}
-				else
+				if (bool_WaitFlag == false)
 				{
-					image_Equals.Visibility = Visibility.Hidden;
-					image_NotEquals.Visibility = Visibility.Visible;
-
-					if (IsDirectory((string)label_From_Folder.Content))
-					{
-						label_Hantei.Content = "違う内容のフォルダ！！";
-					}
-					else
-					{
-						label_Hantei.Content = "違う内容のファイル！！";
-					}
+					System.Threading.Thread.Sleep(100);
+					goto loop;
 				}
-			}
-			else if (
-				label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し") == false)
-			{
-				{
-					image_Equals.Visibility = Visibility.Hidden;
-					image_NotEquals.Visibility = Visibility.Visible;
 
-					if (IsDirectory((string)label_To_Folder.Content))
+				this.label_Hantei.Dispatcher.BeginInvoke(
+					new Action(() =>
 					{
-						label_Hantei.Content = "違う内容のフォルダ！！";
-					}
-					else
-					{
-						label_Hantei.Content = "違う内容のファイル！！";
-					}
-				}
-			}
-			else if (
-				label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し"))
-			{
-				{
-					image_Equals.Visibility = Visibility.Hidden;
-					image_NotEquals.Visibility = Visibility.Visible;
+						if (label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し") == false)
+						{
+							if (CheckDirFiles())
+							{
+								image_Hatena.Visibility = Visibility.Hidden;
+								image_Equals.Visibility = Visibility.Visible;
+								image_NotEquals.Visibility = Visibility.Hidden;
 
-					if (IsDirectory((string)label_From_Folder.Content))
-					{
-						label_Hantei.Content = "違う内容のフォルダ！！";
-					}
-					else
-					{
-						label_Hantei.Content = "違う内容のファイル！！";
-					}
-				}
-			}
-			else if (
-				label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し"))
-			{
-				{
-					image_Equals.Visibility = Visibility.Hidden;
-					image_NotEquals.Visibility = Visibility.Visible;
+								if (IsDirectory((string)label_From_Folder.Content))
+								{
+									label_Hantei.Content = "同じ内容のフォルダ！！";
+								}
+								else
+								{
+									label_Hantei.Content = "同じ内容のファイル！！";
+								}
+							}
+							else
+							{
+								image_Hatena.Visibility = Visibility.Hidden;
+								image_Equals.Visibility = Visibility.Hidden;
+								image_NotEquals.Visibility = Visibility.Visible;
 
-					label_Hantei.Content = "設定が無い！！";
-				}
-			}
+								if (IsDirectory((string)label_From_Folder.Content))
+								{
+									label_Hantei.Content = "違う内容のフォルダ！！";
+								}
+								else
+								{
+									label_Hantei.Content = "違う内容のファイル！！";
+								}
+							}
+						}
+						else if (
+							label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し") == false)
+						{
+							{
+								image_Hatena.Visibility = Visibility.Hidden;
+								image_Equals.Visibility = Visibility.Hidden;
+								image_NotEquals.Visibility = Visibility.Visible;
+
+								if (IsDirectory((string)label_To_Folder.Content))
+								{
+									label_Hantei.Content = "違う内容のフォルダ！！";
+								}
+								else
+								{
+									label_Hantei.Content = "違う内容のファイル！！";
+								}
+							}
+						}
+						else if (
+							label_From_Folder.Content.Equals("無し") == false && label_To_Folder.Content.Equals("無し"))
+						{
+							{
+								image_Hatena.Visibility = Visibility.Hidden;
+								image_Equals.Visibility = Visibility.Hidden;
+								image_NotEquals.Visibility = Visibility.Visible;
+
+								if (IsDirectory((string)label_From_Folder.Content))
+								{
+									label_Hantei.Content = "違う内容のフォルダ！！";
+								}
+								else
+								{
+									label_Hantei.Content = "違う内容のファイル！！";
+								}
+							}
+						}
+						else if (
+							label_From_Folder.Content.Equals("無し") && label_To_Folder.Content.Equals("無し"))
+						{
+							{
+								image_Hatena.Visibility = Visibility.Hidden;
+								image_Equals.Visibility = Visibility.Hidden;
+								image_NotEquals.Visibility = Visibility.Visible;
+
+								label_Hantei.Content = "設定が無い！！";
+							}
+						}
+					}));
+
+				bool_WaitFlag = false;
+			});
 		}
 
 		private bool CheckDirFiles()
 		{
+			/*if (IsDirectory())
+			var from_dir = new DirectoryInfo((string)label_From_Folder.Content);
+			var to_dir = (string)label_To_Folder.Content;
+			*/
+			
 			return false;
 		}
 
@@ -321,28 +415,6 @@ namespace MoveChecker
 			}
 
 			return size;
-		}
-
-		private long SetFileSize(FileInfo fi)
-		{
-			var size = fi.Length;
-
-			return size;
-		}
-
-		private void image_From_Folder_Drop(object sender, DragEventArgs e)
-		{
-
-		}
-
-		private void label_To_Folder_Drop(object sender, DragEventArgs e)
-		{
-
-		}
-
-		private void button_To_Folder_Click(object sender, RoutedEventArgs e)
-		{
-
 		}
 	}
 }

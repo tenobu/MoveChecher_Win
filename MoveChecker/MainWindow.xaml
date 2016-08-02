@@ -3,14 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525"
         Loaded="Window_Loaded" Closing="Window_Closing">
-    
+
     <Grid>
-        
+
         <Label Content="From" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        
+
         <Image Name="image_From_Folder"
                HorizontalAlignment="Left" Height="23" Margin="15,43,0,0" VerticalAlignment="Top" Width="23"
-               Source="Images\folder.png" Drop="image_From_Drop" AllowDrop="true"/>
+               Source="Images\folder.png"
+               DragOver="image_From_Over" Drop="image_From_Drop" AllowDrop="true"/>
         <Label Name="label_From_Folder"
                Content="C:\" Height="23" Margin="43,43,90,0" VerticalAlignment="Top" FontFamily="Calibri"
                Drop="image_From_Drop" AllowDrop="True"/>
@@ -25,9 +26,9 @@
         <Label Content="FilesSize" HorizontalAlignment="Left" Margin="43,66,0,0" VerticalAlignment="Top" Width="64"/>
         <Label Name="label_From_FilesSize"
                Content="0 Byte" Margin="112,66,10,0" VerticalAlignment="Top"/>
-        
+
         <Label Content="To" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
-        
+
         <Image Name="image_To_Folder"
                HorizontalAlignment="Left" Height="23" Margin="15,161,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/folder.png" Drop="image_To_Drop" AllowDrop="true"/>
@@ -46,15 +47,17 @@
         <Label Name="label_To_FilesSize"
                Content="0 Byte" Margin="112,189,10,0" VerticalAlignment="Top"/>
 
+        <Image Name="image_Hatena"
+               HorizontalAlignment="Left" Height="23" Margin="43,115,0,0" VerticalAlignment="Top" Width="23"
+               Source="Images/hatena.png" Visibility="Visible"/>
         <Image Name="image_Equals"
                HorizontalAlignment="Left" Height="23" Margin="134,115,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/equals.png" Visibility="Hidden"/>
         <Image Name="image_NotEquals"
-               HorizontalAlignment="Left" Height="23" Margin="134,115,0,0" VerticalAlignment="Top" Width="23"
+               HorizontalAlignment="Left" Height="23" Margin="43,115,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/not_equals.png" Visibility="Visible"/>
         <Label Name="label_Hantei"
-               Content="Hantei ?" FontSize="25" FontWeight="Bold"
-               HorizontalAlignment="Left" Margin="162,104,0,0" VerticalAlignment="Top" Width="189"/>
+               Content="Hantei ?" FontSize="25" FontWeight="Bold" Margin="71,104,10,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
