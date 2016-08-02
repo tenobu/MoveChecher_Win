@@ -1,0 +1,26 @@
+﻿<Window x:Class="MoveChecker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Label Content="From" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Image Name="image_FromFolder"
+               HorizontalAlignment="Left" Height="23" Margin="15,43,0,0" VerticalAlignment="Top" Width="23"
+               Source="Images\folder.png" Drop="Image_Drop" AllowDrop="true"/>
+        <Label Name="label_FromFolder"
+               Content="C:\" Height="23" Margin="43,43,90,0" VerticalAlignment="Top" FontFamily="Calibri"
+               Drop="Image_Drop" AllowDrop="True"/>
+        <Button Name="button_FromFolder"
+                Width="75" Margin="0,43,10,0" HorizontalAlignment="Right" Height="23" VerticalAlignment="Top"
+                Click="button_FromFolder_Click">
+            <StackPanel  Orientation="Horizontal">
+                <Image Source="Images/folder.png"/>
+                <TextBlock Text=" Folder" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Button>
+        <Label Content="FilesSize" HorizontalAlignment="Left" Margin="43,66,0,0" VerticalAlignment="Top" Width="64"/>
+        <Label Name="label_From_FilesSize"
+               Content="0 Byte" Margin="112,66,10,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
