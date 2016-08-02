@@ -45,7 +45,7 @@ namespace MoveChecker
 
 
 
-
+			/*
 			var from_files = from_dir.GetFiles();
 			var dic_from = new Dictionary<string, FileInfo>();
 
@@ -65,7 +65,7 @@ namespace MoveChecker
 			if (dic_from.Count() != dic_to.Count())
 			{
 				return false;
-			}
+			}*/
 		}
 	}
 
