@@ -26,9 +26,11 @@ namespace MoveChecker
 	{
 		private List<FileInfo> filesList = new List<FileInfo>();
 
-		private bool bool_Hantei = false;
+		//private bool bool_Hantei = false;
 
 		private bool bool_WaitFlag = false;
+
+		private Dictionary<string, Work_Data> dic_Name = null;
 
 
 		public MainWindow()
@@ -382,11 +384,36 @@ namespace MoveChecker
 
 		private bool CheckDirFiles()
 		{
-			/*if (IsDirectory())
-			var from_dir = new DirectoryInfo((string)label_From_Folder.Content);
-			var to_dir = (string)label_To_Folder.Content;
-			*/
-			
+			try
+			{
+				dic_Name = new Dictionary<string, Work_Data>();
+
+				if (IsDirectory((string)label_From_Folder.Content) && IsDirectory((string)label_To_Folder.Content))
+				{
+					var from_dir = new DirectoryInfo((string)label_From_Folder.Content);
+					var to_dir = new DirectoryInfo((string)label_To_Folder.Content);
+
+					var wk = new Work_Data(from_dir, to_dir);
+
+					dic_Name.Add(wk.Name, wk);
+
+					if (wk.endFlag == false)
+					{
+						return false;
+					}
+
+	
+				}
+			}
+			catch(Exception e)
+			{
+				return false;
+			}
+			finally
+			{
+
+			}
+		
 			return false;
 		}
 
