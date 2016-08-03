@@ -47,7 +47,7 @@ namespace MoveChecker
 			this.Height = Properties.Settings.Default.WindowHeight;
 
 			this.label_From_Folder.Content = Properties.Settings.Default.FromFolder;
-			this.label_To_Folder.Content = Properties.Settings.Default.ToFolder;
+			//this.label_To_Base_Folder.Content = Properties.Settings.Default.ToBaseFolder;
 
 			// FromFolderが何も無かったら、
 			if (label_From_Folder.Content.Equals(""))
@@ -56,11 +56,11 @@ namespace MoveChecker
 				label_From_Folder.Content = "無し";
 			}
 
-			// ToFolderが何も無かったら、
-			if (label_To_Folder.Content.Equals(""))
+			// ToBaseFolderが何も無かったら、
+			if (label_To_Base_Folder.Content.Equals(""))
 			{
-				// ToFolderに初期値を送る
-				label_To_Folder.Content = "無し";
+				// ToBaseFolderに初期値を送る
+				label_To_Base_Folder.Content = "無し";
 			}
 
 			bool_WaitFlag = false;
@@ -83,7 +83,7 @@ namespace MoveChecker
 
 			// 設定にフォルダ名を書き込む。
 			Properties.Settings.Default.FromFolder = (string)this.label_From_Folder.Content;
-			Properties.Settings.Default.ToFolder = (string)this.label_To_Folder.Content;
+			Properties.Settings.Default.ToBaseFolder = (string)this.label_To_Base_Folder.Content;
 
 			// 設定に送ったものをセーブ。
 			Properties.Settings.Default.Save();
@@ -181,7 +181,7 @@ namespace MoveChecker
 			}
 		}
 
-		private void image_To_Owner_Drop(object sender, DragEventArgs e)
+		private void image_To_Base_Drop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
@@ -192,7 +192,16 @@ namespace MoveChecker
 
 				if (IsDirectory(files[0]) == false) return;
 
-				label_To_Folder.Content = files[0];
+				label_To_Base_Folder.Content = files[0];
+
+				if (((string)label_From_Folder.Content).Equals(""))
+				{
+					return;
+				}
+
+				var str = new DirectoryInfo((string)label_From_Folder.Content).Name;
+
+				label_To_Folder.Content = (string)label_To_Base_Folder.Content + @"\" + str;
 
 				SetToHantei();
 			}
@@ -425,6 +434,11 @@ namespace MoveChecker
 
 		private bool IsDirectory(string dir_path)
 		{
+			if (File.Exists(dir_path) == false)
+			{
+				return false;
+			}
+
 			if ((File.GetAttributes(dir_path) & FileAttributes.Directory) == FileAttributes.Directory)
 			{
 				return true;

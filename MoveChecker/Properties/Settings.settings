@@ -17,7 +17,7 @@
     <Setting Name="FromFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="ToFolder" Type="System.String" Scope="User">
+    <Setting Name="ToBaseFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

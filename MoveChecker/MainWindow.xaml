@@ -13,7 +13,7 @@
                Source="Images\folder.png"
                DragOver="image_From_Over" Drop="image_From_Drop" AllowDrop="true"/>
         <Label Name="label_From_Folder"
-               Content="C:\" Height="23" Margin="43,43,90,0" VerticalAlignment="Top" FontFamily="Calibri"
+               Content="無し" Height="23" Margin="43,43,90,0" VerticalAlignment="Top" FontFamily="Calibri"
                Drop="image_From_Drop" AllowDrop="True"/>
         <Button Name="button_From_Folder"
                 Width="75" Margin="0,43,10,0" HorizontalAlignment="Right" Height="23" VerticalAlignment="Top"
@@ -29,21 +29,21 @@
 
         <Label Content="To" HorizontalAlignment="Left" Margin="10,150,0,0" VerticalAlignment="Top"/>
 
-        <Image Name="image_To_Owner"
+        <Image Name="image_To_Base"
                HorizontalAlignment="Left" Height="23" Margin="38,152,0,0" VerticalAlignment="Top" Width="23"
-               Source="Images/folder.png" Drop="image_To_Owner_Drop" AllowDrop="true"/>
-        <Label Name="label_To_Owner"
-               Content="C:\" Height="23" Margin="66,152,67,0" VerticalAlignment="Top" FontFamily="Calibri"
-               Drop="image_To_Owner_Drop" AllowDrop="True"/>
+               Source="Images/folder.png" Drop="image_To_Base_Drop" AllowDrop="true"/>
+        <Label Name="label_To_Base_Folder"
+               Content="無し" Height="23" Margin="66,152,90,0" VerticalAlignment="Top" FontFamily="Calibri"
+               Drop="image_To_Base_Drop" AllowDrop="True"/>
 
         <Image Name="image_To_Folder"
                HorizontalAlignment="Left" Height="23" Margin="15,183,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/folder.png" Drop="image_To_Drop" AllowDrop="true"/>
         <Label Name="label_To_Folder"
-               Content="C:\" Height="23" Margin="43,183,90,0" VerticalAlignment="Top" FontFamily="Calibri"
+               Content="無し" Height="23" Margin="43,183,90,0" VerticalAlignment="Top" FontFamily="Calibri"
                Drop="image_To_Drop" AllowDrop="True"/>
         <Button Name="button_To_Folder"
-                Width="75" Margin="0,183,10,0" HorizontalAlignment="Right" Height="23" VerticalAlignment="Top"
+                Width="75" Margin="0,153,10,0" HorizontalAlignment="Right" Height="23" VerticalAlignment="Top"
                 Click="button_To_Folder_Click">
             <StackPanel  Orientation="Horizontal">
                 <Image Source="Images/folder.png"/>
@@ -55,13 +55,13 @@
                Content="0 Byte" Margin="112,213,10,0" VerticalAlignment="Top"/>
 
         <Image Name="image_Hatena"
-               HorizontalAlignment="Left" Height="23" Margin="43,115,0,0" VerticalAlignment="Top" Width="23"
+               HorizontalAlignment="Left" Height="23" Margin="43,105,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/hatena.png" Visibility="Visible"/>
         <Image Name="image_Equals"
                HorizontalAlignment="Left" Height="23" Margin="134,115,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/equals.png" Visibility="Hidden"/>
         <Image Name="image_NotEquals"
-               HorizontalAlignment="Left" Height="23" Margin="43,115,0,0" VerticalAlignment="Top" Width="23"
+               HorizontalAlignment="Left" Height="23" Margin="43,105,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/not_equals.png" Visibility="Visible"/>
         <Label Name="label_Hantei"
                Content="Hantei ?" FontSize="25" FontWeight="Bold" Margin="71,94,10,0" VerticalAlignment="Top"/>

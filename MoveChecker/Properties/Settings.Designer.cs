@@ -86,12 +86,12 @@ namespace MoveChecker.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ToFolder {
+        public string ToBaseFolder {
             get {
-                return ((string)(this["ToFolder"]));
+                return ((string)(this["ToBaseFolder"]));
             }
             set {
-                this["ToFolder"] = value;
+                this["ToBaseFolder"] = value;
             }
         }
     }
