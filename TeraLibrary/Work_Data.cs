@@ -7,91 +7,95 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization;
 
-namespace MoveChecker
+namespace TeraLibrary
 {
 	public class Work_Data
 	{
-		public string Name = "";
-		public DateTime dt_Start = DateTime.Now, dt_End = DateTime.Now;
+		public string str_Name = "", str_Status = "";
+		public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
+
+		public AB_Data ab_Data = null;
+
+		public Dictionary<string, AB_Data> dic_AB = null;
 
 
-		public AB_Data a = null;
-		public AB_Data b = null;
-
-		public Work_Data(DirectoryInfo dir_a, DirectoryInfo dir_b)
+		public Work_Data(string a_path, string b_path)
 		{
-			a = new AB_Data(dir_a);
-			b = new AB_Data(dir_b);
+			str_Status = "Normal";
 
-			CheckData();
-		}
-
-		public Work_Data(FileInfo file_a, FileInfo file_b)
-		{
-			a = new AB_Data(file_a);
-			b = new AB_Data(file_b);
-
-			CheckData();
-		}
-
-		private void CheckData()
-		{
-			if (a.Name.Equals(b.Name) == false)
+			if (Directory.Exists(a_path) == false)
 			{
-				Name = "Error";
+				str_Status = "Abend";
 				return;
 			}
 
-			Name = a.Name;
+			var di_a = new DirectoryInfo(a_path);
 
-
-
-			/*
-			var from_files = from_dir.GetFiles();
-			var dic_from = new Dictionary<string, FileInfo>();
-
-			foreach (var fi in from_files)
+			if (Directory.Exists(b_path) == false)
 			{
-				dic_from.Add(fi.Name, fi);
+				str_Status = "Abend";
+				return;
 			}
 
-			var to_files = to_dir.GetFiles();
-			var dic_to = new Dictionary<string, FileInfo>();
+			var di_b = new DirectoryInfo(b_path);
 
-			foreach (var fi in to_files)
-			{
-				dic_to.Add(fi.Name, fi);
-			}
 
-			if (dic_from.Count() != dic_to.Count())
-			{
-				return false;
-			}*/
+			dic_AB = new Dictionary<string, AB_Data>();
+
+
+			str_Name = di_a.Name;
+
+			ab_Data = new AB_Data(dic_AB, di_a);
 		}
 	}
 
 	public class AB_Data
 	{
 		public string type = "";
-		public string fullName = "", Name = "";
-		public long Length = 0;
+		public string Name = "", a_FullName = "", b_FullName = "";
+		public long a_Length = 0, b_Length = 0;
 
-		public AB_Data(DirectoryInfo ab)
+		public List<AB_Data> ab_Datas = null;
+
+ 
+		public AB_Data(Dictionary<string, AB_Data> dic_AB, DirectoryInfo ab)
 		{
 			type = "Dir";
 
-			fullName = ab.FullName;
 			Name = ab.Name;
-			Length = 0;
+
+			a_FullName = ab.FullName;
+			a_Length = 0;
+
+			ab_Datas = new List<AB_Data>();
+
+			foreach (var fi_c in ab.GetFiles())
+			{
+				var ab_data = new AB_Data(dic_AB, fi_c);
+
+				ab_Datas.Add(ab_data);
+			}
+
+			foreach (var di_c in ab.GetDirectories())
+			{
+				var ab_data = new AB_Data(dic_AB, di_c);
+
+				ab_Datas.Add(ab_data);
+			}
+
+			dic_AB.Add(a_FullName, this);
 		}
 
-		public AB_Data(FileInfo ab)
+		public AB_Data(Dictionary<string, AB_Data> dic_AB, FileInfo ab)
 		{
 			type = "File";
-			
-			fullName = ab.FullName;
+
 			Name = ab.Name;
-			Length = ab.Length;
+
+			a_FullName = ab.FullName;
+			a_Length = ab.Length;
+
+			dic_AB.Add(a_FullName, this);
 		}
 
 		private long SetFilesSize(DirectoryInfo di)

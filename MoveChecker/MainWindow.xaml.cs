@@ -421,10 +421,10 @@ namespace MoveChecker
 
 				dic_Name.Add(wk.Name, wk);
 
-				if (wk.endFlag == false)
+				/*if (wk.endFlag == false)
 				{
 					return false;
-				}
+				}*/
 
 				return true;
 			}
