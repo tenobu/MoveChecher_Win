@@ -437,9 +437,22 @@ namespace MoveChecker
 		{
 			var size = 0L;
 
-			foreach (var file_c in di.GetFiles())
+			/*if (di.Name.StartsWith("$"))
 			{
-				size += file_c.Length;
+				return size;
+			}*/
+
+			try
+			{
+				foreach (var file_c in di.GetFiles())
+				{
+					size += file_c.Length;
+				}
+			}
+			catch(System.UnauthorizedAccessException e)
+			{
+				Console.WriteLine(e.Message);
+				return size;
 			}
 
 			foreach (var dic_c in di.GetDirectories())
