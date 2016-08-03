@@ -181,6 +181,23 @@ namespace MoveChecker
 			}
 		}
 
+		private void image_To_Owner_Drop(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				SetNowHantei();
+
+				// Note that you can have more than one file.
+				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+				if (IsDirectory(files[0]) == false) return;
+
+				label_To_Folder.Content = files[0];
+
+				SetToHantei();
+			}
+		}
+
 		private void image_To_Drop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
