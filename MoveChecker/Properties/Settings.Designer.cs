@@ -94,5 +94,17 @@ namespace MoveChecker.Properties {
                 this["ToBaseFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ToFolder {
+            get {
+                return ((string)(this["ToFolder"]));
+            }
+            set {
+                this["ToFolder"] = value;
+            }
+        }
     }
 }

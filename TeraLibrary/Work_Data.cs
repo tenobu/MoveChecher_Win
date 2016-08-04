@@ -11,21 +11,27 @@ namespace TeraLibrary
 {
 	public class Work_Data
 	{
-		public string str_Name = "", str_Status = "";
+		public string str_Name = "", str_Status = "", str_Error = "";
 		public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
 
 		public AB_Data ab_Data = null;
 
 		public Dictionary<string, AB_Data> dic_AB = null;
 
+		public bool bool_WaitFlag = false;
+
 
 		public Work_Data(string a_path, string b_base_path)
 		{
+			bool_WaitFlag = true;
+
 			str_Status = "Normal";
 
 			if (Directory.Exists(a_path) == false)
 			{
+				str_Error = "From がディレクトリで無い！！";
 				str_Status = "Abend";
+				bool_WaitFlag = false;
 				return;
 			}
 
@@ -33,7 +39,9 @@ namespace TeraLibrary
 
 			if (Directory.Exists(b_base_path) == false)
 			{
+				str_Error = "ToBase がディレクトリで無い！！";
 				str_Status = "Abend";
+				bool_WaitFlag = false;
 				return;
 			}
 
@@ -47,13 +55,55 @@ namespace TeraLibrary
 			ab_Data = new AB_Data(dic_AB, di_a, di_b);
 		}
 
-		public bool Copy()
+		public void Check()
 		{
-			ab_Data.Copy();
+			bool_WaitFlag = true;
 
-			return false;
+			if (str_Status.Equals("Abend") == false)
+			{
+				try
+				{
+					ab_Data.CheckDirectory(dic_AB);
+				}
+				catch(Exception e)
+				{
+					str_Error  = "Error A " + e.Message;
+					str_Status = "Abend";
+				}
+			}
+
+			bool_WaitFlag = false;
 		}
 
+		public void Copy()
+		{
+			bool_WaitFlag = true;
+
+			if (str_Status.Equals("Abend") == false)
+			{
+				try
+				{
+					ab_Data.Copy();
+				}
+				catch (Exception e)
+				{
+					str_Error = "Error B " + e.Message;
+					str_Status = "Abend";
+				}
+			}
+
+			bool_WaitFlag = false;
+		}
+
+		public long A_Size()
+		{
+			return 0L;
+		}
+
+		public long B_Size()
+		{
+			return 0L;
+		}
 	}
 
 	public class AB_Data
@@ -63,7 +113,7 @@ namespace TeraLibrary
 		public long a_Length = 0, b_Length = 0;
 		public bool b_Flag = false, copyEnd = false;
 
-		public DirectoryInfo di_B = null;
+		public DirectoryInfo di_A = null, di_B = null;
 		public FileInfo fi_A = null, fi_B = null;
 
 		public List<AB_Data> ab_Datas = null;
@@ -80,29 +130,10 @@ namespace TeraLibrary
 
 			a_Length = b_Length = 0;
 
+			di_A = di_a;
 			di_B = di_b;
 
-			ab_Datas = new List<AB_Data>();
-
-			foreach (var fi_c_a in di_a.GetFiles())
-			{
-				var fi_c_b = new FileInfo(b_FullName + @"\" + fi_c_a.Name);
-
-				var ab_data = new AB_Data(dic_AB, fi_c_a, fi_c_b);
-
-				ab_Datas.Add(ab_data);
-			}
-
-			foreach (var di_c_a in di_a.GetDirectories())
-			{
-				var di_c_b = new DirectoryInfo(b_FullName + @"\" + di_c_a.Name);
-
-				var ab_data = new AB_Data(dic_AB, di_c_a, di_c_b);
-
-				ab_Datas.Add(ab_data);
-			}
-
-			dic_AB.Add(a_FullName, this);
+			//dic_AB.Add(a_FullName, this);
 		}
 
 		public AB_Data(Dictionary<string, AB_Data> dic_AB, FileInfo fi_a, FileInfo fi_b)
@@ -123,12 +154,44 @@ namespace TeraLibrary
 			fi_A = fi_a;
 			fi_B = fi_b;
 
-			//Console.WriteLine("Length = " + a_Length);
+			//dic_AB.Add(a_FullName, this);
+		}
+
+		public void CheckDirectory(Dictionary<string, AB_Data> dic_AB)
+		{
+			ab_Datas = new List<AB_Data>();
+
+			foreach (var fi_c_a in di_A.GetFiles())
+			{
+				var fi_c_b = new FileInfo(b_FullName + @"\" + fi_c_a.Name);
+
+				var ab_data = new AB_Data(dic_AB, fi_c_a, fi_c_b);
+
+				ab_data.CheckFile(dic_AB);
+
+				ab_Datas.Add(ab_data);
+			}
+
+			foreach (var di_c_a in di_A.GetDirectories())
+			{
+				var di_c_b = new DirectoryInfo(b_FullName + @"\" + di_c_a.Name);
+
+				var ab_data = new AB_Data(dic_AB, di_c_a, di_c_b);
+
+				ab_data.CheckDirectory(dic_AB);
+
+				ab_Datas.Add(ab_data);
+			}
 
 			dic_AB.Add(a_FullName, this);
 		}
 
-		public bool Copy()
+		public void CheckFile(Dictionary<string, AB_Data> dic_AB)
+		{
+			dic_AB.Add(a_FullName, this);
+		}
+
+		public void Copy()
 		{
 			loop:
 		
@@ -209,8 +272,6 @@ namespace TeraLibrary
 
 					break;
 			}
-
-			return false;
 		}
 
 		private bool file_compare(string file_name1, string file_name2)
