@@ -17,12 +17,22 @@ namespace MoveCk
 			Console.WriteLine("start !!");
 
 			var wk = new Work_Data(
-				new DirectoryInfo(@"C:\Users\x45991\Documents\Projects"),
-				new DirectoryInfo(@"C:\Users\x45991\Documents\Program Files"));
+				@"C:\Users\x45991\Documents\Projects",
+				@"C:\Users\x45991\Documents\Program Files");
+
+			wk.Copy();
 
 			Console.WriteLine("end !!");
 
-			//Console.ReadKey();
+			foreach (var ab in wk.dic_AB)
+			{
+				var key = ab.Key;
+				var value = ab.Value;
+
+				Console.WriteLine(value.a_FullName + " -> " + value.b_FullName);
+			}
+
+			Console.ReadKey();
 		}
 	}
 }
