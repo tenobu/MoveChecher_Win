@@ -17,6 +17,7 @@ namespace TeraLibrary
 		public AB_Data ab_Data = null;
 
 		public Dictionary<string, AB_Data> dic_AB = null;
+		public Dictionary<AB_Data, AB_Flag> dic_Flag = null;
 
 		public bool bool_WaitFlag = false;
 
@@ -47,12 +48,13 @@ namespace TeraLibrary
 
 			var di_b = new DirectoryInfo(b_base_path + @"\" + di_a.Name);
 
-			dic_AB = new Dictionary<string, AB_Data>();
+			dic_AB   = new Dictionary<string , AB_Data>();
+			dic_Flag = new Dictionary<AB_Data, AB_Flag>();
 
 
 			str_Name = di_a.Name;
 
-			ab_Data = new AB_Data(dic_AB, di_a, di_b);
+			ab_Data = new AB_Data(dic_AB, dic_Flag, di_a, di_b);
 		}
 
 		public void Check()
@@ -63,7 +65,7 @@ namespace TeraLibrary
 			{
 				try
 				{
-					ab_Data.CheckDirectory(dic_AB);
+					ab_Data.CheckDirectory(dic_AB, dic_Flag);
 				}
 				catch(Exception e)
 				{
@@ -119,7 +121,10 @@ namespace TeraLibrary
 		public List<AB_Data> ab_Datas = null;
 
  
-		public AB_Data(Dictionary<string, AB_Data> dic_AB, DirectoryInfo di_a, DirectoryInfo di_b)
+		public AB_Data(
+			Dictionary<string, AB_Data> dic_AB,
+			Dictionary<AB_Data, AB_Flag> dic_Flag,
+			DirectoryInfo di_a, DirectoryInfo di_b)
 		{
 			type = "Dir";
 
@@ -132,11 +137,12 @@ namespace TeraLibrary
 
 			di_A = di_a;
 			di_B = di_b;
-
-			//dic_AB.Add(a_FullName, this);
 		}
 
-		public AB_Data(Dictionary<string, AB_Data> dic_AB, FileInfo fi_a, FileInfo fi_b)
+		public AB_Data(
+			Dictionary<string, AB_Data> dic_AB,
+			Dictionary<AB_Data, AB_Flag> dic_Flag,
+			FileInfo fi_a, FileInfo fi_b)
 		{
 			type = "File";
 
@@ -153,11 +159,10 @@ namespace TeraLibrary
 
 			fi_A = fi_a;
 			fi_B = fi_b;
-
-			//dic_AB.Add(a_FullName, this);
 		}
 
-		public void CheckDirectory(Dictionary<string, AB_Data> dic_AB)
+		public void CheckDirectory(
+			Dictionary<string, AB_Data> dic_AB, Dictionary<AB_Data, AB_Flag> dic_Flag)
 		{
 			ab_Datas = new List<AB_Data>();
 
@@ -186,7 +191,8 @@ namespace TeraLibrary
 			dic_AB.Add(a_FullName, this);
 		}
 
-		public void CheckFile(Dictionary<string, AB_Data> dic_AB)
+		public void CheckFile(
+			Dictionary<string, AB_Data> dic_AB, Dictionary<AB_Data, AB_Flag> dic_Flag)
 		{
 			dic_AB.Add(a_FullName, this);
 		}
@@ -327,6 +333,17 @@ namespace TeraLibrary
 			}
 
 			return size;
+		}
+	}
+
+	public class AB_Flag
+	{
+		public bool bool_EndFlag = false;
+
+
+		public AB_Flag()
+		{
+
 		}
 	}
 }
