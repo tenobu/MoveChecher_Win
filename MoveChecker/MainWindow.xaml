@@ -62,8 +62,8 @@
                HorizontalAlignment="Left" Height="23" Margin="43,105,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/hatena.png" Visibility="Visible"/>
         <Image Name="image_Equals"
-               HorizontalAlignment="Left" Height="23" Margin="134,115,0,0" VerticalAlignment="Top" Width="23"
-               Source="Images/equals.png" Visibility="Hidden"/>
+               HorizontalAlignment="Left" Height="23" Margin="43,105,0,0" VerticalAlignment="Top" Width="23"
+               Source="Images/equals.png" Visibility="Visible"/>
         <Image Name="image_NotEquals"
                HorizontalAlignment="Left" Height="23" Margin="43,105,0,0" VerticalAlignment="Top" Width="23"
                Source="Images/not_equals.png" Visibility="Visible"/>

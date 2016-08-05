@@ -54,7 +54,7 @@ namespace TeraLibrary
 
 			str_Name = di_a.Name;
 
-			ab_Data = new AB_Data(dic_AB, dic_Flag, di_a, di_b);
+			ab_Data = new AB_Data(/*dic_AB, dic_Flag,*/ di_a, di_b);
 		}
 
 		public void Check()
@@ -63,15 +63,15 @@ namespace TeraLibrary
 
 			if (str_Status.Equals("Abend") == false)
 			{
-				try
-				{
+				//try
+				//{
 					ab_Data.CheckDirectory(dic_AB, dic_Flag);
-				}
+				/*}
 				catch(Exception e)
 				{
 					str_Error  = "Error A " + e.Message;
 					str_Status = "Abend";
-				}
+				}*/
 			}
 
 			bool_WaitFlag = false;
@@ -83,15 +83,15 @@ namespace TeraLibrary
 
 			if (str_Status.Equals("Abend") == false)
 			{
-				try
-				{
+				//try
+				//{
 					ab_Data.Copy();
-				}
+				/*}
 				catch (Exception e)
 				{
 					str_Error = "Error B " + e.Message;
 					str_Status = "Abend";
-				}
+				}*/
 			}
 
 			bool_WaitFlag = false;
@@ -121,10 +121,7 @@ namespace TeraLibrary
 		public List<AB_Data> ab_Datas = null;
 
  
-		public AB_Data(
-			Dictionary<string, AB_Data> dic_AB,
-			Dictionary<AB_Data, AB_Flag> dic_Flag,
-			DirectoryInfo di_a, DirectoryInfo di_b)
+		public AB_Data(DirectoryInfo di_a, DirectoryInfo di_b)
 		{
 			type = "Dir";
 
@@ -139,10 +136,7 @@ namespace TeraLibrary
 			di_B = di_b;
 		}
 
-		public AB_Data(
-			Dictionary<string, AB_Data> dic_AB,
-			Dictionary<AB_Data, AB_Flag> dic_Flag,
-			FileInfo fi_a, FileInfo fi_b)
+		public AB_Data(FileInfo fi_a, FileInfo fi_b)
 		{
 			type = "File";
 
@@ -170,9 +164,9 @@ namespace TeraLibrary
 			{
 				var fi_c_b = new FileInfo(b_FullName + @"\" + fi_c_a.Name);
 
-				var ab_data = new AB_Data(dic_AB, fi_c_a, fi_c_b);
+				var ab_data = new AB_Data(/*dic_AB,*/ fi_c_a, fi_c_b);
 
-				ab_data.CheckFile(dic_AB);
+				ab_data.CheckFile(dic_AB, dic_Flag);
 
 				ab_Datas.Add(ab_data);
 			}
@@ -181,20 +175,22 @@ namespace TeraLibrary
 			{
 				var di_c_b = new DirectoryInfo(b_FullName + @"\" + di_c_a.Name);
 
-				var ab_data = new AB_Data(dic_AB, di_c_a, di_c_b);
+				var ab_data = new AB_Data(/*dic_AB,*/ di_c_a, di_c_b);
 
-				ab_data.CheckDirectory(dic_AB);
+				ab_data.CheckDirectory(dic_AB, dic_Flag);
 
 				ab_Datas.Add(ab_data);
 			}
 
 			dic_AB.Add(a_FullName, this);
+			//dic_Flag.Add(this, new AB_Flag());
 		}
 
 		public void CheckFile(
 			Dictionary<string, AB_Data> dic_AB, Dictionary<AB_Data, AB_Flag> dic_Flag)
 		{
 			dic_AB.Add(a_FullName, this);
+			//dic_Flag.Add(this, new AB_Flag());
 		}
 
 		public void Copy()
