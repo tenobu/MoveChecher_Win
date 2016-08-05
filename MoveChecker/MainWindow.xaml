@@ -36,10 +36,10 @@
                Content="無し" Height="23" Margin="66,152,90,0" VerticalAlignment="Top" FontFamily="Calibri"
                Drop="image_To_Base_Drop" AllowDrop="True"/>
 
-        <Button Name="button_Start"
-                Content="Start" Margin="0,211,10,0" VerticalAlignment="Top"
+        <Button Name="button_Copy"
+                Content="Copy" Margin="0,211,10,0" VerticalAlignment="Top"
                 FontSize="17" FontWeight="Bold" IsEnabled="False"
-                Click="button_Start_Click" Height="30" HorizontalAlignment="Right" Width="111"/>
+                Click="button_Copy_Click" Height="30" HorizontalAlignment="Right" Width="111"/>
 
         <Image Name="image_To_Folder"
                HorizontalAlignment="Left" Height="23" Margin="15,183,0,0" VerticalAlignment="Top" Width="23"

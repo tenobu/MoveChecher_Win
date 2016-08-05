@@ -236,16 +236,16 @@ namespace MoveChecker
 			}
 		}
 
-		private void button_Start_Click(object sender, RoutedEventArgs e)
+		private void button_Copy_Click(object sender, RoutedEventArgs e)
 		{
 			var task = Task.Factory.StartNew(() =>
 			{
 				try
 				{
-					this.button_Start.Dispatcher.BeginInvoke(
+					this.button_Copy.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							button_Start.IsEnabled = false;
+							button_Copy.IsEnabled = false;
 
 						}));
 					wk_Data.Copy();
@@ -261,6 +261,9 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
+							label_From_FilesSize.Content = wk_Data.long_A_Size.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = wk_Data.long_B_Size.ToString("#,#0 Byte");
+
 							if (wk_Data.str_Status.Equals("Abend"))
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
@@ -286,10 +289,10 @@ namespace MoveChecker
 				}
 				finally
 				{
-					button_Start.Dispatcher.BeginInvoke(
+					button_Copy.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							button_Start.IsEnabled = true;
+							button_Copy.IsEnabled = true;
 						}));
 				}
 			});
@@ -306,10 +309,8 @@ namespace MoveChecker
 					{
 						if (wk_Data.bool_WaitFlag == true)
 						{
-							//label_From_FilesSize.Content = size.ToString("#,#0 Byte");
 							label_From_FilesSize.Content = "？ Byte";
-							//label_To_FilesSize.Content = size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content = "？ Byte";
+							label_To_FilesSize.Content   = "？ Byte";
 
 							image_Hatena.Visibility    = Visibility.Visible;
 							image_Equals.Visibility    = Visibility.Hidden;
@@ -341,10 +342,10 @@ namespace MoveChecker
 					{
 						//label_From_FilesSize.Content = size.ToString("#,#0 Byte");
 						//label_From_FilesSize.Content = wk_Data.A_Size().ToString("0 Byte");
-						label_From_FilesSize.Content = wk_Data.A_Size().ToString("#,#0 Byte");
+						label_From_FilesSize.Content = wk_Data.long_A_Size.ToString("#,#0 Byte");
 						//label_To_FilesSize.Content = size.ToString("#,#0 Byte");
 						//label_To_FilesSize.Content = wk_Data.B_Size().ToString("0 Byte");
-						label_To_FilesSize.Content = wk_Data.B_Size().ToString("#,#0 Byte");
+						label_To_FilesSize.Content = wk_Data.long_B_Size.ToString("#,#0 Byte");
 
 						if (wk_Data.str_Status.Equals("Abend"))
 						{
@@ -354,18 +355,46 @@ namespace MoveChecker
 
 							label_Hantei.Content = wk_Data.str_Error;
 
-							button_Start.IsEnabled = false;
+							button_Copy.IsEnabled = false;
 						}
 						else if (
 							wk_Data.str_Status.Equals("Normal"))
 						{
-							image_Hatena.Visibility    = Visibility.Hidden;
-							image_Equals.Visibility    = Visibility.Hidden;
-							image_NotEquals.Visibility = Visibility.Visible;
+							if (wk_Data.bool_EndFlag)
+							{
+								image_Hatena.Visibility    = Visibility.Hidden;
+								image_Equals.Visibility    = Visibility.Visible;
+								image_NotEquals.Visibility = Visibility.Hidden;
 
-							label_Hantei.Content = "Start の準備が出来ました。";
+								label_Hantei.Content = "フォルダは ＝(イコール) です。";
 
-							button_Start.IsEnabled = true;
+								button_Copy.IsEnabled = false;
+							}
+							else
+							{
+								var a_size = wk_Data.long_A_Size;
+								var b_size = wk_Data.long_B_Size;
+								var str = "";
+
+								if (b_size == 0L)
+								{
+									str = "Start の準備が出来ました。";
+								}
+								else
+								{
+									var s = 100 - (int)((float)b_size / (float)a_size * 100.0);
+
+									str = "Start の準備が出来ました (" + s + "% が残っています)。";
+								}
+
+								image_Hatena.Visibility    = Visibility.Hidden;
+								image_Equals.Visibility    = Visibility.Hidden;
+								image_NotEquals.Visibility = Visibility.Visible;
+
+								label_Hantei.Content = str;
+
+								button_Copy.IsEnabled = true;
+							}
 						}
 					}));
 			});

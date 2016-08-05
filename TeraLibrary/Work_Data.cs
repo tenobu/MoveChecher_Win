@@ -13,6 +13,9 @@ namespace TeraLibrary
 	{
 		public string str_Name = "", str_Status = "", str_Error = "";
 		public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
+		public bool bool_EndFlag = false;
+
+		public long long_A_Size = 0L, long_B_Size = 0L;
 
 		public AB_Data ab_Data = null;
 
@@ -66,6 +69,20 @@ namespace TeraLibrary
 				//try
 				//{
 					ab_Data.CheckDirectory(dic_AB, dic_Flag);
+
+					var end_flag = true;
+					long_A_Size = long_B_Size = 0L;
+				
+					foreach (var ab in dic_AB.Values)
+					{
+						if (end_flag && ab.copyEnd == false) end_flag = false;
+
+						long_A_Size += ab.a_Length;
+						long_B_Size += ab.b_Length;
+					}
+
+					bool_EndFlag = end_flag;
+
 				/*}
 				catch(Exception e)
 				{
@@ -86,6 +103,18 @@ namespace TeraLibrary
 				//try
 				//{
 					ab_Data.Copy();
+
+					var end_flag = true;
+					long_B_Size = 0L;
+
+					foreach (var ab in dic_AB.Values)
+					{
+						if (end_flag && ab.copyEnd == false) end_flag = false;
+
+						long_B_Size += ab.b_Length;
+					}
+
+					bool_EndFlag = end_flag;
 				/*}
 				catch (Exception e)
 				{
@@ -95,16 +124,6 @@ namespace TeraLibrary
 			}
 
 			bool_WaitFlag = false;
-		}
-
-		public long A_Size()
-		{
-			return 0L;
-		}
-
-		public long B_Size()
-		{
-			return 0L;
 		}
 	}
 
@@ -189,6 +208,18 @@ namespace TeraLibrary
 		public void CheckFile(
 			Dictionary<string, AB_Data> dic_AB, Dictionary<AB_Data, AB_Flag> dic_Flag)
 		{
+			if (fi_B.Exists)
+			{
+				if (FileCompare(fi_A.FullName, fi_B.FullName))
+				{
+					copyEnd = true;
+				}
+				else
+				{
+					b_Length = 0L;
+				}
+			}
+
 			dic_AB.Add(a_FullName, this);
 			//dic_Flag.Add(this, new AB_Flag());
 		}
@@ -238,7 +269,7 @@ namespace TeraLibrary
 						{
 							if (a_Length == b_Length)
 							{
-								if (file_compare(a_FullName, b_FullName) == false)
+								if (FileCompare(a_FullName, b_FullName) == false)
 								{
 									fi_A.CopyTo(b_FullName, true);
 
@@ -276,7 +307,7 @@ namespace TeraLibrary
 			}
 		}
 
-		private bool file_compare(string file_name1, string file_name2)
+		private bool FileCompare(string file_name1, string file_name2)
 		{
 			FileStream reader1 = new FileStream(file_name1,
 												FileMode.Open,
