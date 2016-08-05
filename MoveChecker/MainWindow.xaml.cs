@@ -31,11 +31,6 @@ namespace MoveChecker
 		private Work_Data wk_Data = null;
 
 
-		private List<FileInfo> filesList = new List<FileInfo>();
-
-		private Dictionary<string, Work_Data> dic_Name = null;
-
-
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -345,9 +340,11 @@ namespace MoveChecker
 					new Action(() =>
 					{
 						//label_From_FilesSize.Content = size.ToString("#,#0 Byte");
-						label_From_FilesSize.Content = wk_Data.A_Size().ToString("0 Byte");
+						//label_From_FilesSize.Content = wk_Data.A_Size().ToString("0 Byte");
+						label_From_FilesSize.Content = wk_Data.A_Size().ToString("#,#0 Byte");
 						//label_To_FilesSize.Content = size.ToString("#,#0 Byte");
-						label_To_FilesSize.Content = wk_Data.B_Size().ToString("0 Byte");
+						//label_To_FilesSize.Content = wk_Data.B_Size().ToString("0 Byte");
+						label_To_FilesSize.Content = wk_Data.B_Size().ToString("#,#0 Byte");
 
 						if (wk_Data.str_Status.Equals("Abend"))
 						{
