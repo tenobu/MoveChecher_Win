@@ -37,9 +37,15 @@
                Drop="image_To_Base_Drop" AllowDrop="True"/>
 
         <Button Name="button_Copy"
-                Content="Copy" Margin="0,211,10,0" VerticalAlignment="Top"
+                Content="Copy" Margin="0,211,103,0" VerticalAlignment="Top"
                 FontSize="17" FontWeight="Bold" IsEnabled="False"
-                Click="button_Copy_Click" Height="30" HorizontalAlignment="Right" Width="111"/>
+                Height="30" HorizontalAlignment="Right" Width="88"
+                Click="button_Copy_Click"/>
+        <Button Name="button_Delete"
+                Content="Delete" Margin="0,211,10,0" VerticalAlignment="Top"
+                FontSize="17" FontWeight="Bold" IsEnabled="False"
+                Height="30" HorizontalAlignment="Right" Width="88"
+                Click="button_Delete_Click" />
 
         <Image Name="image_To_Folder"
                HorizontalAlignment="Left" Height="23" Margin="15,183,0,0" VerticalAlignment="Top" Width="23"
@@ -56,7 +62,7 @@
         </Button>
         <Label Content="FilesSize" HorizontalAlignment="Left" Margin="43,213,0,0" VerticalAlignment="Top" Width="64" RenderTransformOrigin="0.516,1.464"/>
         <Label Name="label_To_FilesSize"
-               Content="0 Byte" Margin="112,213,126,0" VerticalAlignment="Top"/>
+               Content="0 Byte" Margin="112,213,221,0" VerticalAlignment="Top"/>
 
         <Image Name="image_Hatena"
                HorizontalAlignment="Left" Height="23" Margin="43,105,0,0" VerticalAlignment="Top" Width="23"

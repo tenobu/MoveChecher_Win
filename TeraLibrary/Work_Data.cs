@@ -102,19 +102,69 @@ namespace TeraLibrary
 			{
 				//try
 				//{
-					ab_Data.Copy();
+				ab_Data.Copy();
 
-					var end_flag = true;
-					long_B_Size = 0L;
+				var end_flag = true;
+				long_B_Size = 0L;
 
-					foreach (var ab in dic_AB.Values)
+				foreach (var ab in dic_AB.Values)
+				{
+					if (end_flag && ab.copyEnd == false) end_flag = false;
+
+					long_B_Size += ab.b_Length;
+				}
+
+				if (end_flag) bool_EndFlag = true;
+
+				bool_EndFlag = end_flag;
+				/*}
+				catch (Exception e)
+				{
+					str_Error = "Error B " + e.Message;
+					str_Status = "Abend";
+				}*/
+			}
+
+			bool_WaitFlag = false;
+		}
+
+		public void Delete()
+		{
+			bool_WaitFlag = true;
+
+			if (str_Status.Equals("Abend") == false)
+			{
+				//try
+				//{
+				ab_Data.Delete();
+
+				var end_flag = true;
+				long_A_Size = 0L;
+
+				foreach (var ab in dic_AB.Values)
+				{
+					if (end_flag && ab.deleteEnd == false) end_flag = false;
+
+					if (ab.type.Equals("Dir"))
 					{
-						if (end_flag && ab.copyEnd == false) end_flag = false;
-
-						long_B_Size += ab.b_Length;
+						if (ab.di_A.Exists == true)
+						{
+							if (end_flag && ab.deleteEnd == false) end_flag = false;
+						}
 					}
+					else if (
+						ab.type.Equals("File"))
+					{
+						if (ab.di_A.Exists == true)
+						{
+							if (end_flag && ab.deleteEnd == false) end_flag = false;
 
-					bool_EndFlag = end_flag;
+							long_A_Size += ab.a_Length;
+						}
+					}
+				}
+
+				bool_EndFlag = end_flag;
 				/*}
 				catch (Exception e)
 				{
@@ -132,7 +182,7 @@ namespace TeraLibrary
 		public string type = "";
 		public string Name = "", a_FullName = "", b_FullName = "";
 		public long a_Length = 0, b_Length = 0;
-		public bool b_Flag = false, copyEnd = false;
+		public bool b_Flag = false, copyEnd = false, deleteEnd = false;
 
 		public DirectoryInfo di_A = null, di_B = null;
 		public FileInfo fi_A = null, fi_B = null;
@@ -226,12 +276,12 @@ namespace TeraLibrary
 
 		public void Copy()
 		{
-			loop:
-		
+		loop:
+
 			switch (type)
 			{
 				case "Dir":
- 
+
 					if (di_B.Exists == false)
 					{
 						di_B.Create();
@@ -247,7 +297,7 @@ namespace TeraLibrary
 					}
 
 					break;
-				
+
 				case "File":
 
 					if (copyEnd == false)
@@ -302,6 +352,52 @@ namespace TeraLibrary
 							}
 						}
 					}
+
+					break;
+			}
+		}
+
+		public void Delete()
+		{
+		loop:
+
+			switch (type)
+			{
+				case "File":
+
+					if (deleteEnd == false)
+					{
+						if (fi_A.Exists)
+						{
+							fi_A.Delete();
+
+							fi_A = new FileInfo(a_FullName);
+
+							if (fi_A.Exists) goto loop;
+						}
+
+						deleteEnd = true;
+					}
+
+					break;
+
+				case "Dir":
+
+					foreach (var ab_data in ab_Datas)
+					{
+						ab_data.Delete();
+					}
+
+					if (di_A.Exists)
+					{
+						di_A.Delete();
+
+						di_A = new DirectoryInfo(a_FullName);
+
+						if (di_A.Exists) goto loop;
+					}
+
+					deleteEnd = true;
 
 					break;
 			}

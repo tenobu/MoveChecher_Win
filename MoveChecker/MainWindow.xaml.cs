@@ -155,7 +155,7 @@ namespace MoveChecker
 			{
 				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-				if (IsDirectory(files[0]))
+				if (Directory.Exists(files[0]))
 				{
 					e.Handled = true;
 				}
@@ -179,7 +179,7 @@ namespace MoveChecker
 				// Note that you can have more than one file.
 				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-				if (IsDirectory(files[0]) == false) return;
+				if (Directory.Exists(files[0]) == false) return;
 
 				label_From_Folder.Content = files[0];
 				str_From_Folder = (string)label_From_Folder.Content;
@@ -198,7 +198,7 @@ namespace MoveChecker
 				// Note that you can have more than one file.
 				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-				if (IsDirectory(files[0]) == false) return;
+				if (Directory.Exists(files[0]) == false) return;
 
 				label_To_Base_Folder.Content = files[0];
 
@@ -227,7 +227,7 @@ namespace MoveChecker
 				// Note that you can have more than one file.
 				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-				if (IsDirectory(files[0]) == false) return;
+				if (Directory.Exists(files[0]) == false) return;
 
 				label_To_Folder.Content = files[0];
 
@@ -296,6 +296,11 @@ namespace MoveChecker
 						}));
 				}
 			});
+		}
+
+		private void button_Delete_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 
 		private void SetNowHantei()
@@ -398,51 +403,6 @@ namespace MoveChecker
 						}
 					}));
 			});
-		}
-
-		private bool IsDirectory(string dir_path)
-		{
-			if (Directory.Exists(dir_path))
-			{
-				return true;
-			}
-
-			/*if ((File.GetAttributes(dir_path) & FileAttributes.Directory) == FileAttributes.Directory)
-			{
-				return true;
-			}*/
-
-			return false;
-		}
-
-		private long SetFilesSize(DirectoryInfo di)
-		{
-			var size = 0L;
-
-			/*if (di.Name.StartsWith("$"))
-			{
-				return size;
-			}*/
-
-			try
-			{
-				foreach (var file_c in di.GetFiles())
-				{
-					size += file_c.Length;
-				}
-			}
-			catch(System.UnauthorizedAccessException e)
-			{
-				Console.WriteLine(e.Message);
-				return size;
-			}
-
-			foreach (var dic_c in di.GetDirectories())
-			{
-				size += SetFilesSize(dic_c);
-			}
-
-			return size;
 		}
 	}
 }
