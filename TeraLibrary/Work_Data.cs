@@ -51,13 +51,22 @@ namespace TeraLibrary
 
 			var di_b = new DirectoryInfo(b_base_path + @"\" + di_a.Name);
 
+			if (di_a.FullName.Equals(b_base_path) ||
+				di_a.FullName.Equals(di_b.FullName))
+			{
+				str_Error = "同じディレクトリ！！";
+				str_Status = "Abend";
+				bool_WaitFlag = false;
+				return;
+			}
+
 			dic_AB   = new Dictionary<string , AB_Data>();
 			dic_Flag = new Dictionary<AB_Data, AB_Flag>();
 
 
 			str_Name = di_a.Name;
 
-			ab_Data = new AB_Data(/*dic_AB, dic_Flag,*/ di_a, di_b);
+			ab_Data = new AB_Data(this, di_a, di_b);
 		}
 
 		public void Check()
@@ -68,21 +77,24 @@ namespace TeraLibrary
 			{
 				//try
 				//{
-					ab_Data.CheckDirectory(dic_AB, dic_Flag);
-
 					var end_flag = true;
 					long_A_Size = long_B_Size = 0L;
-				
+
+					ab_Data.CheckDirectory(dic_AB, dic_Flag);
+
 					foreach (var ab in dic_AB.Values)
 					{
 						if (end_flag && ab.copyEnd == false) end_flag = false;
 
-						long_A_Size += ab.a_Length;
-						long_B_Size += ab.b_Length;
+						//long_A_Size += ab.a_Length;
+						//long_B_Size += ab.b_Length;
 					}
+
+					//long_AB_Size = long_A_Size;
 
 					bool_EndFlag = end_flag;
 
+					Console.WriteLine("End = " + bool_EndFlag);
 				/*}
 				catch(Exception e)
 				{
@@ -179,6 +191,8 @@ namespace TeraLibrary
 
 	public class AB_Data
 	{
+		public Work_Data wk_Data = null;
+
 		public string type = "";
 		public string Name = "", a_FullName = "", b_FullName = "";
 		public long a_Length = 0, b_Length = 0;
@@ -190,8 +204,10 @@ namespace TeraLibrary
 		public List<AB_Data> ab_Datas = null;
 
  
-		public AB_Data(DirectoryInfo di_a, DirectoryInfo di_b)
+		public AB_Data(Work_Data wk, DirectoryInfo di_a, DirectoryInfo di_b)
 		{
+			wk_Data = wk;
+
 			type = "Dir";
 
 			Name = di_a.Name;
@@ -205,8 +221,10 @@ namespace TeraLibrary
 			di_B = di_b;
 		}
 
-		public AB_Data(FileInfo fi_a, FileInfo fi_b)
+		public AB_Data(Work_Data wk, FileInfo fi_a, FileInfo fi_b)
 		{
+			wk_Data = wk;
+
 			type = "File";
 
 			Name = fi_a.Name;
@@ -219,6 +237,9 @@ namespace TeraLibrary
 			{
 				b_Length = fi_b.Length;
 			}
+
+			wk_Data.long_A_Size += a_Length;
+			wk_Data.long_B_Size += b_Length;
 
 			fi_A = fi_a;
 			fi_B = fi_b;
@@ -233,7 +254,7 @@ namespace TeraLibrary
 			{
 				var fi_c_b = new FileInfo(b_FullName + @"\" + fi_c_a.Name);
 
-				var ab_data = new AB_Data(/*dic_AB,*/ fi_c_a, fi_c_b);
+				var ab_data = new AB_Data(wk_Data, fi_c_a, fi_c_b);
 
 				ab_data.CheckFile(dic_AB, dic_Flag);
 
@@ -244,11 +265,16 @@ namespace TeraLibrary
 			{
 				var di_c_b = new DirectoryInfo(b_FullName + @"\" + di_c_a.Name);
 
-				var ab_data = new AB_Data(/*dic_AB,*/ di_c_a, di_c_b);
+				var ab_data = new AB_Data(wk_Data, di_c_a, di_c_b);
 
 				ab_data.CheckDirectory(dic_AB, dic_Flag);
 
 				ab_Datas.Add(ab_data);
+			}
+
+			if (di_B.Exists)
+			{
+				copyEnd = true;
 			}
 
 			dic_AB.Add(a_FullName, this);
