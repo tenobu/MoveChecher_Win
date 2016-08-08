@@ -21,6 +21,7 @@ using TeraLibrary;
 
 namespace MoveChecker
 {
+	/// v0.2_
 	/// <summary>
 	/// MainWindow.xaml の相互作用ロジック
 	/// </summary>
@@ -29,7 +30,6 @@ namespace MoveChecker
 		private string str_From_Folder = "", str_To_BaseFolder = "";
 
 		private Work_Data wk_Data = null;
-
 
 
 		public MainWindow()
