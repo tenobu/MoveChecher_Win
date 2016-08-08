@@ -31,6 +31,7 @@ namespace MoveChecker
 		private Work_Data wk_Data = null;
 
 
+
 		public MainWindow()
 		{
 			InitializeComponent();
