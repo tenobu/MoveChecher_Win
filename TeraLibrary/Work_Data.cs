@@ -49,7 +49,7 @@ namespace TeraLibrary
 				return;
 			}
 
-			var di_b = new DirectoryInfo(b_base_path + @"\" + di_a.Name);
+			var di_b = new DirectoryInfo((b_base_path + @"\" + di_a.Name).Replace(@"\\", @"\"));
 
 			if (di_a.FullName.Equals(b_base_path) ||
 				di_a.FullName.Equals(di_b.FullName))

@@ -144,6 +144,14 @@ namespace MoveChecker
 					label_To_Base_Folder.Content = fbd.SelectedPath;
 					str_To_BaseFolder = (string)label_To_Base_Folder.Content;
 
+
+
+
+
+
+
+
+
 					//SetToHantei();
 					SetHantei();
 				}
@@ -224,7 +232,7 @@ namespace MoveChecker
 
 				var str = new DirectoryInfo(str_From_Folder).Name;
 
-				label_To_Folder.Content = str_To_BaseFolder + @"\" + str;
+				label_To_Folder.Content = (str_To_BaseFolder + @"\" + str).Replace(@"\\", @"\");
 
 				SetNowHantei();
 
