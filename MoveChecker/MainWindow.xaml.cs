@@ -47,7 +47,6 @@ namespace MoveChecker
 
 			this.label_From_Folder.Content    = Properties.Settings.Default.FromFolder;
 			this.label_To_Base_Folder.Content = Properties.Settings.Default.ToBaseFolder;
-			this.label_To_Folder.Content      = Properties.Settings.Default.ToFolder;
 
 			// FromFolderが何も無かったら、
 			if (label_From_Folder.Content.Equals(""))
@@ -65,6 +64,9 @@ namespace MoveChecker
 
 			str_From_Folder   = (string)label_From_Folder.Content;
 			str_To_BaseFolder = (string)label_To_Base_Folder.Content;
+
+			//2016/08/17 17:00:00
+			SetTo();
 
 			SetNowHantei();
 
@@ -115,6 +117,9 @@ namespace MoveChecker
 					label_From_Folder.Content = fbd.SelectedPath;
 					str_From_Folder = (string)label_From_Folder.Content;
 
+					//2016/08/17 17:00:00
+					SetTo();
+
 					//SetFromHantei();
 					SetHantei();
 				}
@@ -141,16 +146,21 @@ namespace MoveChecker
 
 				if (result == win.DialogResult.OK)
 				{
+					if (fbd.SelectedPath.EndsWith(@"\"))
+					{
+						var text = fbd.SelectedPath;
+
+						text = text.Remove(text.Count() - 1);
+
+						fbd.SelectedPath = text;
+					}
+
 					label_To_Base_Folder.Content = fbd.SelectedPath;
+
 					str_To_BaseFolder = (string)label_To_Base_Folder.Content;
 
-
-
-
-
-
-
-
+					//2016/08/17 17:00:00
+					SetTo();
 
 					//SetToHantei();
 					SetHantei();
@@ -200,9 +210,12 @@ namespace MoveChecker
 
 				str_To_BaseFolder = (string)label_To_Base_Folder.Content;
 
-				var str = new DirectoryInfo(str_From_Folder).Name;
+				//2016/08/17 17:00:00
+				/*var str = new DirectoryInfo(str_From_Folder).Name;
 
-				label_To_Folder.Content = str_To_BaseFolder + @"\" + str;
+				label_To_Folder.Content = str_To_BaseFolder + @"\" + str;*/
+
+				SetTo();
 
 				SetNowHantei();
 
@@ -230,9 +243,12 @@ namespace MoveChecker
 
 				str_To_BaseFolder = (string)label_To_Base_Folder.Content;
 
-				var str = new DirectoryInfo(str_From_Folder).Name;
+				//2016/08/17 17:00:00
+				/*var str = new DirectoryInfo(str_From_Folder).Name;
 
-				label_To_Folder.Content = (str_To_BaseFolder + @"\" + str).Replace(@"\\", @"\");
+				label_To_Folder.Content = (str_To_BaseFolder + @"\" + str).Replace(@"\\", @"\");*/
+
+				SetTo();
 
 				SetNowHantei();
 
@@ -257,6 +273,16 @@ namespace MoveChecker
 			}
 		}*/
 
+		//2016/08/17 17:00:00
+		private void SetTo()
+		{
+			var from = new DirectoryInfo(str_From_Folder);
+
+			var text = str_To_BaseFolder + @"\" + from.Name;
+
+			label_To_Folder.Content = text;
+		}
+
 		private void SetNowHantei()
 		{
 			wk_Data = new Work_Data(str_From_Folder, str_To_BaseFolder);
@@ -280,7 +306,7 @@ namespace MoveChecker
 							button_Copy.IsEnabled   = false;
 							button_Delete.IsEnabled = false;
 
-							progressBar_All.Value   = 0f;
+							progressBar_All.Value   =   0f;
 							progressBar_All.Maximum = 100f;
 							textBlock_件数.Text     = "0 Byte";
 							textBlock_Parcent.Text  = "0%";
@@ -311,7 +337,7 @@ namespace MoveChecker
 							var size = 0f;
 							if (a_size == 0f && b_size == 0f)
 							{
-								progressBar_All.Value   = 0f;
+								progressBar_All.Value   =   0f;
 								progressBar_All.Maximum = 100f;
 							}
 							else
