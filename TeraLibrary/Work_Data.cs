@@ -66,7 +66,9 @@ namespace TeraLibrary
 
 			str_Name = di_a.Name;
 
-			ab_Data = new AB_Data(this, di_a, di_b);
+			//2016/08/18 11:22:00
+			//ab_Data = new AB_Data(this, di_a, di_b);
+			ab_Data = new AB_Data(this, true, di_a.Name, di_a.FullName, di_b.FullName);
 		}
 
 		public void Check()
@@ -84,7 +86,7 @@ namespace TeraLibrary
 
 					foreach (var ab in dic_AB.Values)
 					{
-						if (end_flag && ab.copyEnd == false) end_flag = false;
+						if (end_flag && ab.bool_CopyEnd == false) end_flag = false;
 
 						//long_A_Size += ab.a_Length;
 						//long_B_Size += ab.b_Length;
@@ -121,9 +123,9 @@ namespace TeraLibrary
 
 				foreach (var ab in dic_AB.Values)
 				{
-					if (end_flag && ab.copyEnd == false) end_flag = false;
+					if (end_flag && ab.bool_CopyEnd == false) end_flag = false;
 
-					long_B_Size += ab.b_Length;
+					long_B_Size += ab.long_B_Length;
 				}
 
 				if (end_flag) bool_EndFlag = true;
@@ -155,23 +157,27 @@ namespace TeraLibrary
 
 				foreach (var ab in dic_AB.Values)
 				{
-					if (end_flag && ab.deleteEnd == false) end_flag = false;
+					if (end_flag && ab.bool_DeleteEnd == false) end_flag = false;
 
-					if (ab.type.Equals("Dir"))
+					if (ab.str_Type.Equals("Dir"))
 					{
-						if (ab.di_A.Exists == true)
+						//2016/08/18 13:40:00
+						//if (ab.di_A.Exists == true)
+						if (Directory.Exists(ab.str_A_FullName) == true)
 						{
-							if (end_flag && ab.deleteEnd == false) end_flag = false;
+							if (end_flag && ab.bool_DeleteEnd == false) end_flag = false;
 						}
 					}
 					else if (
-						ab.type.Equals("File"))
+						ab.str_Type.Equals("File"))
 					{
-						if (ab.di_A.Exists == true)
+						//2016/08/18 13:40:00
+						//if (ab.di_A.Exists == true)
+						if (File.Exists(ab.str_A_FullName) == true)
 						{
-							if (end_flag && ab.deleteEnd == false) end_flag = false;
+							if (end_flag && ab.bool_DeleteEnd == false) end_flag = false;
 
-							long_A_Size += ab.a_Length;
+							long_A_Size += ab.long_A_Length;
 						}
 					}
 				}
@@ -193,18 +199,19 @@ namespace TeraLibrary
 	{
 		public Work_Data wk_Data = null;
 
-		public string type = "";
-		public string Name = "", a_FullName = "", b_FullName = "";
-		public long a_Length = 0, b_Length = 0;
-		public bool b_Flag = false, copyEnd = false, deleteEnd = false;
+		public string str_Type = "";
+		public string str_Name = "", str_A_FullName = "", str_B_FullName = "";
+		public long long_A_Length = 0, long_B_Length = 0;
+		public bool bool_B_Flag = false, bool_CopyEnd = false, bool_DeleteEnd = false;
 
-		public DirectoryInfo di_A = null, di_B = null;
-		public FileInfo fi_A = null, fi_B = null;
+		//public DirectoryInfo di_A = null, di_B = null;
+		//public FileInfo fi_A = null, fi_B = null;
 
 		public List<AB_Data> ab_Datas = null;
 
- 
-		public AB_Data(Work_Data wk, DirectoryInfo di_a, DirectoryInfo di_b)
+
+		//2016/08/18 11:22:00
+		/*public AB_Data(Work_Data wk, DirectoryInfo di_a, DirectoryInfo di_b)
 		{
 			wk_Data = wk;
 
@@ -219,9 +226,10 @@ namespace TeraLibrary
 
 			di_A = di_a;
 			di_B = di_b;
-		}
+		}*/
 
-		public AB_Data(Work_Data wk, FileInfo fi_a, FileInfo fi_b)
+		//2016/08/18 11:22:00
+		/*public AB_Data(Work_Data wk, FileInfo fi_a, FileInfo fi_b)
 		{
 			wk_Data = wk;
 
@@ -243,6 +251,40 @@ namespace TeraLibrary
 
 			fi_A = fi_a;
 			fi_B = fi_b;
+		}*/
+
+		//2016/08/18 11:22:00
+		public AB_Data(Work_Data wk, bool is_dir, string str_name, string str_a_full, string str_b_full)
+		{
+			wk_Data = wk;
+
+			str_Name = str_name;
+
+			str_A_FullName = str_a_full;
+			str_B_FullName = str_b_full;
+
+			if (is_dir)
+			{
+				str_Type = "Dir";
+
+				long_A_Length = long_B_Length = 0;
+			}
+			else
+			{
+				str_Type = "File";
+
+				long_A_Length = new FileInfo(str_A_FullName).Length;
+				if (File.Exists(str_B_FullName))
+				{
+					long_B_Length = new FileInfo(str_B_FullName).Length;
+				}
+
+				wk_Data.long_A_Size += long_A_Length;
+				wk_Data.long_B_Size += long_B_Length;
+			}
+
+			//di_A = di_a;
+			//di_B = di_b;
 		}
 
 		public void CheckDirectory(
@@ -250,53 +292,73 @@ namespace TeraLibrary
 		{
 			ab_Datas = new List<AB_Data>();
 
-			foreach (var fi_c_a in di_A.GetFiles())
+			//2016/08/18 12:45:00
+			//foreach (var fi_c_a in di_A.GetFiles())
+			foreach (var c_a_dir in Directory.GetFiles(str_A_FullName))
 			{
-				var fi_c_b = new FileInfo(b_FullName + @"\" + fi_c_a.Name);
+				//2016/08/18 11:55:00
+				//var fi_c_b = new FileInfo(b_FullName + @"\" + fi_c_a.Name);
+				var list = c_a_dir.Split('\\');
+				var name = list[list.Count() - 1];
 
-				var ab_data = new AB_Data(wk_Data, fi_c_a, fi_c_b);
+				//2016/08/18 12:45:00
+				//var ab_data = new AB_Data(wk_Data, fi_c_a, fi_c_b);
+				var ab_data = new AB_Data(wk_Data, false, name, c_a_dir, str_B_FullName + @"\" + name);
 
 				ab_data.CheckFile(dic_AB, dic_Flag);
 
 				ab_Datas.Add(ab_data);
 			}
 
-			foreach (var di_c_a in di_A.GetDirectories())
-			{
-				var di_c_b = new DirectoryInfo(b_FullName + @"\" + di_c_a.Name);
 
-				var ab_data = new AB_Data(wk_Data, di_c_a, di_c_b);
+			//2016/08/18 13:10:00
+			//foreach (var di_c_a in di_A.GetDirectories())
+			foreach (var c_a_dir in Directory.GetDirectories(str_A_FullName))
+			{
+				//2016/08/18 12:35:00
+				//var di_c_b = new DirectoryInfo(b_FullName + @"\" + di_c_a.Name);
+				var list = c_a_dir.Split('\\');
+				var name = list[list.Count() - 1];
+
+				//var ab_data = new AB_Data(wk_Data, di_c_a, di_c_b);
+				var ab_data = new AB_Data(wk_Data, true, name, c_a_dir, str_B_FullName + @"\" + name);
 
 				ab_data.CheckDirectory(dic_AB, dic_Flag);
 
 				ab_Datas.Add(ab_data);
 			}
 
-			if (di_B.Exists)
+			//2016/08/18 13:10:00
+			//if (di_B.Exists)
+			if (Directory.Exists(str_B_FullName))
 			{
-				copyEnd = true;
+				bool_CopyEnd = true;
 			}
 
-			dic_AB.Add(a_FullName, this);
+			dic_AB.Add(str_A_FullName, this);
 			//dic_Flag.Add(this, new AB_Flag());
 		}
 
 		public void CheckFile(
 			Dictionary<string, AB_Data> dic_AB, Dictionary<AB_Data, AB_Flag> dic_Flag)
 		{
-			if (fi_B.Exists)
+			//2016/08/18 13:10:00
+			//if (fi_B.Exists)
+			if (File.Exists(str_A_FullName))
 			{
-				if (FileCompare(fi_A.FullName, fi_B.FullName))
+				//2016/08/18 13:10:00
+				//if (FileCompare(fi_A.FullName, fi_B.FullName))
+				if (FileCompare(str_A_FullName, str_B_FullName))
 				{
-					copyEnd = true;
+					bool_CopyEnd = true;
 				}
 				else
 				{
-					b_Length = 0L;
+					long_B_Length = 0L;
 				}
 			}
 
-			dic_AB.Add(a_FullName, this);
+			dic_AB.Add(str_A_FullName, this);
 			//dic_Flag.Add(this, new AB_Flag());
 		}
 
@@ -304,15 +366,17 @@ namespace TeraLibrary
 		{
 		loop:
 
-			switch (type)
+			switch (str_Type)
 			{
 				case "Dir":
 
-					if (di_B.Exists == false)
+					//if (di_B.Exists == false)
+					if (Directory.Exists(str_B_FullName) == false)
 					{
-						di_B.Create();
+						/*di_B.Create();
 
-						di_B = new DirectoryInfo(b_FullName);
+						di_B = new DirectoryInfo(str_B_FullName);*/
+						Directory.CreateDirectory(str_B_FullName);
 
 						goto loop;
 					}
@@ -326,53 +390,36 @@ namespace TeraLibrary
 
 				case "File":
 
-					if (copyEnd == false)
+					if (bool_CopyEnd == false)
 					{
-						if (fi_B.Exists == false)
+						//if (fi_B.Exists == false)
+						if (File.Exists(str_B_FullName) == false)
 						{
-							fi_A.CopyTo(b_FullName, true);
-
-							fi_B = new FileInfo(b_FullName);
-
-							if (fi_B.Exists)
-							{
-								b_Length = fi_B.Length;
-							}
+							//2016/08/18 13:30:00
+							FileCopy();
 
 							goto loop;
 						}
 						else
 						{
-							if (a_Length == b_Length)
+							if (long_A_Length == long_B_Length)
 							{
-								if (FileCompare(a_FullName, b_FullName) == false)
+								if (FileCompare(str_A_FullName, str_B_FullName) == false)
 								{
-									fi_A.CopyTo(b_FullName, true);
-
-									fi_B = new FileInfo(b_FullName);
-
-									if (fi_B.Exists)
-									{
-										b_Length = fi_B.Length;
-									}
+									//2016/08/18 13:30:00
+									FileCopy();
 
 									goto loop;
 								}
 								else
 								{
-									copyEnd = true;
+									bool_CopyEnd = true;
 								}
 							}
 							else
 							{
-								fi_A.CopyTo(b_FullName, true);
-
-								fi_B = new FileInfo(b_FullName);
-
-								if (fi_B.Exists)
-								{
-									b_Length = fi_B.Length;
-								}
+								//2016/08/18 13:30:00
+								FileCopy();
 
 								goto loop;
 							}
@@ -383,26 +430,50 @@ namespace TeraLibrary
 			}
 		}
 
+		//2016/08/18 13:30:00
+		private void FileCopy()
+		{
+			/*fi_A.CopyTo(str_B_FullName, true);
+
+			fi_B = new FileInfo(str_B_FullName);*/
+			File.Copy(str_A_FullName, str_B_FullName, true);
+
+			//fi_B = new FileInfo(str_B_FullName);
+
+			//if (fi_B.Exists)
+			if (File.Exists(str_B_FullName))
+			{
+				//long_B_Length = fi_B.Length;
+				long_B_Length = new FileInfo(str_B_FullName).Length;
+			}
+		}
+
 		public void Delete()
 		{
 		loop:
 
-			switch (type)
+			switch (str_Type)
 			{
 				case "File":
 
-					if (deleteEnd == false)
+					if (bool_DeleteEnd == false)
 					{
-						if (fi_A.Exists)
+						//2016/08/18 13:30:00
+						//if (fi_A.Exists)
+						if (File.Exists(str_A_FullName))
 						{
-							fi_A.Delete();
+							//2016/08/18 13:30:00
+							/*fi_A.Delete();
 
-							fi_A = new FileInfo(a_FullName);
+							fi_A = new FileInfo(str_A_FullName);*/
+							File.Delete(str_A_FullName);
 
-							if (fi_A.Exists) goto loop;
+							//2016/08/18 13:30:00
+							//if (fi_A.Exists) goto loop;
+							if (File.Exists(str_A_FullName)) goto loop;
 						}
 
-						deleteEnd = true;
+						bool_DeleteEnd = true;
 					}
 
 					break;
@@ -414,16 +485,22 @@ namespace TeraLibrary
 						ab_data.Delete();
 					}
 
-					if (di_A.Exists)
+					//2016/08/18 13:30:00
+					//if (di_A.Exists)
+					if (Directory.Exists(str_A_FullName))
 					{
-						di_A.Delete();
+						//2016/08/18 13:30:00
+						/*di_A.Delete();
 
-						di_A = new DirectoryInfo(a_FullName);
+						di_A = new DirectoryInfo(str_A_FullName);*/
+						Directory.Delete(str_A_FullName);
 
-						if (di_A.Exists) goto loop;
+						//2016/08/18 13:30:00
+						//if (di_A.Exists) goto loop;
+						if (Directory.Exists(str_A_FullName)) goto loop;
 					}
 
-					deleteEnd = true;
+					bool_DeleteEnd = true;
 
 					break;
 			}
