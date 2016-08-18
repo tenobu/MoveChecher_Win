@@ -623,7 +623,79 @@ namespace MoveChecker
 
 		private void button_Cancel_Click(object sender, RoutedEventArgs e)
 		{
+			var task = Task.Factory.StartNew(() =>
+			{
+				try
+				{
+					this.button_Copy.Dispatcher.BeginInvoke(
+						new Action(() =>
+						{
+							button_Copy.IsEnabled   = false;
+							button_Delete.IsEnabled = false;
+							button_Cancel.IsEnabled = true;
+						}));
 
+					ft_Cntl.Cancel();
+
+
+					this.label_Hantei.Dispatcher.BeginInvoke(
+						new Action(() =>
+						{
+							label_From_FilesSize.Content = ft_Cntl.long_F_Size.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
+
+							var a_size = (float)ft_Cntl.long_F_Size;
+							var b_size = (float)ft_Cntl.long_T_Size;
+
+							var size = b_size / a_size * 100.0f;
+
+							progressBar_All.Maximum = a_size;
+							progressBar_All.Value   = b_size;
+							textBlock_件数.Text     = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
+							textBlock_Parcent.Text  = (int)size + "%";
+
+							if (ft_Cntl.str_Status.Equals("Abend"))
+							{
+								image_Hatena.Visibility    = Visibility.Hidden;
+								image_Equals.Visibility    = Visibility.Hidden;
+								image_NotEquals.Visibility = Visibility.Visible;
+
+								label_Hantei.Content = ft_Cntl.str_Error;
+
+								button_Copy.IsEnabled   = true;
+								button_Delete.IsEnabled = false;
+								button_Cancel.IsEnabled = false;
+							}
+							else if (
+								ft_Cntl.str_Status.Equals("Normal"))
+							{
+								image_Hatena.Visibility    = Visibility.Hidden;
+								image_Equals.Visibility    = Visibility.Visible;
+								image_NotEquals.Visibility = Visibility.Hidden;
+
+								label_Hantei.Content = "正常に終了。";
+
+								button_Copy.IsEnabled   = false;
+								button_Delete.IsEnabled = true;
+								button_Cancel.IsEnabled = false;
+							}
+						}));
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex.Message);
+				}
+				finally
+				{
+					button_Copy.Dispatcher.BeginInvoke(
+						new Action(() =>
+						{
+							button_Copy.IsEnabled = true;
+							button_Delete.IsEnabled = false;
+							button_Cancel.IsEnabled = false;
+						}));
+				}
+			});
 		}
 	}
 }
