@@ -28,7 +28,7 @@ namespace MoveChecker
 	{
 		private string str_From_Folder = "", str_To_BaseFolder = "";
 
-		private Work_Data wk_Data = null;
+		private FromTo_Controller ft_Cntl = null;
 
 
 
@@ -285,14 +285,14 @@ namespace MoveChecker
 
 		private void SetNowHantei()
 		{
-			wk_Data = new Work_Data(str_From_Folder, str_To_BaseFolder);
+			ft_Cntl = new FromTo_Controller(str_From_Folder, str_To_BaseFolder);
 
 			var task = Task.Factory.StartNew(() =>
 			{
 				this.label_Hantei.Dispatcher.BeginInvoke(
 					new Action(() =>
 					{
-						if (wk_Data.bool_WaitFlag == true)
+						if (ft_Cntl.bool_WaitFlag == true)
 						{
 							label_From_FilesSize.Content = "？ Byte";
 							label_To_FilesSize.Content   = "？ Byte";
@@ -319,20 +319,20 @@ namespace MoveChecker
 		{
 			var task = Task.Factory.StartNew(() =>
 			{
-				wk_Data.Check();
+				ft_Cntl.Check();
 
 			loop:
 
-				if (wk_Data.bool_WaitFlag)
+				if (ft_Cntl.bool_WaitFlag)
 				{
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							label_From_FilesSize.Content = wk_Data.long_A_Size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = wk_Data.long_B_Size.ToString("#,#0 Byte");
+							label_From_FilesSize.Content = ft_Cntl.long_A_Size.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 
-							var a_size = (float)wk_Data.long_A_Size;
-							var b_size = (float)wk_Data.long_B_Size;
+							var a_size = (float)ft_Cntl.long_A_Size;
+							var b_size = (float)ft_Cntl.long_B_Size;
 
 							var size = 0f;
 							if (a_size == 0f && b_size == 0f)
@@ -348,7 +348,7 @@ namespace MoveChecker
 								progressBar_All.Value   = b_size;
 							}
 
-							textBlock_件数.Text     = wk_Data.long_B_Size.ToString("#,#0 Byte");
+							textBlock_件数.Text     = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 							textBlock_Parcent.Text  = ((int)size).ToString("#0%");
 						}));
 
@@ -361,11 +361,11 @@ namespace MoveChecker
 				this.label_Hantei.Dispatcher.BeginInvoke(
 					new Action(() =>
 					{
-						label_From_FilesSize.Content = wk_Data.long_A_Size.ToString("#,#0 Byte");
-						label_To_FilesSize.Content   = wk_Data.long_B_Size.ToString("#,#0 Byte");
+						label_From_FilesSize.Content = ft_Cntl.long_A_Size.ToString("#,#0 Byte");
+						label_To_FilesSize.Content   = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 
-						var a_size = (float)wk_Data.long_A_Size;
-						var b_size = (float)wk_Data.long_B_Size;
+						var a_size = (float)ft_Cntl.long_A_Size;
+						var b_size = (float)ft_Cntl.long_B_Size;
 
 						var size = 0f;
 						if (a_size == 0f && b_size == 0f)
@@ -381,23 +381,23 @@ namespace MoveChecker
 							progressBar_All.Value   = b_size;
 						}
 
-						textBlock_件数.Text     = wk_Data.long_B_Size.ToString("#,#0 Byte");
+						textBlock_件数.Text     = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 						textBlock_Parcent.Text  = ((int)size).ToString("#0%");
 
-						if (wk_Data.str_Status.Equals("Abend"))
+						if (ft_Cntl.str_Status.Equals("Abend"))
 						{
 							image_Hatena.Visibility    = Visibility.Hidden;
 							image_Equals.Visibility    = Visibility.Hidden;
 							image_NotEquals.Visibility = Visibility.Visible;
 
-							label_Hantei.Content = wk_Data.str_Error;
+							label_Hantei.Content = ft_Cntl.str_Error;
 
 							button_Copy.IsEnabled = false;
 						}
 						else if (
-							wk_Data.str_Status.Equals("Normal"))
+							ft_Cntl.str_Status.Equals("Normal"))
 						{
-							if (wk_Data.bool_EndFlag)
+							if (ft_Cntl.bool_EndFlag)
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
 								image_Equals.Visibility    = Visibility.Visible;
@@ -451,26 +451,26 @@ namespace MoveChecker
 
 						}));
 
-					wk_Data.Copy();
+					ft_Cntl.Copy();
 
 				loop:
 
-					if (wk_Data.bool_WaitFlag)
+					if (ft_Cntl.bool_WaitFlag)
 					{
 						this.button_Copy.Dispatcher.BeginInvoke(
 							new Action(() =>
 							{
-								label_From_FilesSize.Content = wk_Data.long_A_Size.ToString("#,#0 Byte");
-								label_To_FilesSize.Content   = wk_Data.long_B_Size.ToString("#,#0 Byte");
+								label_From_FilesSize.Content = ft_Cntl.long_A_Size.ToString("#,#0 Byte");
+								label_To_FilesSize.Content   = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 
-								var a_size = (float)wk_Data.long_A_Size;
-								var b_size = (float)wk_Data.long_B_Size;
+								var a_size = (float)ft_Cntl.long_A_Size;
+								var b_size = (float)ft_Cntl.long_B_Size;
 
 								var size = b_size / a_size * 100.0f;
 
 								progressBar_All.Maximum = a_size;
 								progressBar_All.Value   = b_size;
-								textBlock_件数.Text     = wk_Data.long_B_Size.ToString("#,#0 Byte");
+								textBlock_件数.Text     = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 								textBlock_Parcent.Text  = ((int)size).ToString("#0%");
 							}));
 
@@ -482,31 +482,31 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							label_From_FilesSize.Content = wk_Data.long_A_Size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = wk_Data.long_B_Size.ToString("#,#0 Byte");
+							label_From_FilesSize.Content = ft_Cntl.long_A_Size.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 
-							var a_size = (float)wk_Data.long_A_Size;
-							var b_size = (float)wk_Data.long_B_Size;
+							var a_size = (float)ft_Cntl.long_A_Size;
+							var b_size = (float)ft_Cntl.long_B_Size;
 
 							var size = b_size / a_size * 100.0f;
 
 							progressBar_All.Maximum = a_size;
 							progressBar_All.Value   = b_size;
-							textBlock_件数.Text     = wk_Data.long_B_Size.ToString("#,#0 Byte");
+							textBlock_件数.Text     = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 							textBlock_Parcent.Text  = (int)size + "%";
 
-							if (wk_Data.str_Status.Equals("Abend"))
+							if (ft_Cntl.str_Status.Equals("Abend"))
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
 								image_Equals.Visibility    = Visibility.Hidden;
 								image_NotEquals.Visibility = Visibility.Visible;
 
-								label_Hantei.Content = wk_Data.str_Error;
+								label_Hantei.Content = ft_Cntl.str_Error;
 
 								button_Delete.IsEnabled = false;
 							}
 							else if (
-								wk_Data.str_Status.Equals("Normal"))
+								ft_Cntl.str_Status.Equals("Normal"))
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
 								image_Equals.Visibility    = Visibility.Visible;
@@ -545,11 +545,11 @@ namespace MoveChecker
 							button_Delete.IsEnabled = false;
 
 						}));
-					wk_Data.Delete();
+					ft_Cntl.Delete();
 
 				loop:
 
-					if (wk_Data.bool_WaitFlag)
+					if (ft_Cntl.bool_WaitFlag)
 					{
 						System.Threading.Thread.Sleep(100);
 						goto loop;
@@ -558,21 +558,21 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							label_From_FilesSize.Content = wk_Data.long_A_Size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = wk_Data.long_B_Size.ToString("#,#0 Byte");
+							label_From_FilesSize.Content = ft_Cntl.long_A_Size.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = ft_Cntl.long_B_Size.ToString("#,#0 Byte");
 
-							if (wk_Data.str_Status.Equals("Abend"))
+							if (ft_Cntl.str_Status.Equals("Abend"))
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
 								image_Equals.Visibility    = Visibility.Hidden;
 								image_NotEquals.Visibility = Visibility.Visible;
 
-								label_Hantei.Content = wk_Data.str_Error;
+								label_Hantei.Content = ft_Cntl.str_Error;
 							}
 							else if (
-								wk_Data.str_Status.Equals("Normal"))
+								ft_Cntl.str_Status.Equals("Normal"))
 							{
-								if (wk_Data.bool_EndFlag)
+								if (ft_Cntl.bool_EndFlag)
 								{
 									image_Hatena.Visibility    = Visibility.Hidden;
 									image_Equals.Visibility    = Visibility.Hidden;
@@ -584,8 +584,8 @@ namespace MoveChecker
 								}
 								else
 								{
-									var a_size = wk_Data.long_A_Size;
-									var b_size = wk_Data.long_B_Size;
+									var a_size = ft_Cntl.long_A_Size;
+									var b_size = ft_Cntl.long_B_Size;
 									var str = "";
 
 									if (a_size == b_size)

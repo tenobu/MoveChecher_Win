@@ -77,32 +77,24 @@ namespace TeraLibrary
 
 			if (str_Status.Equals("Abend") == false)
 			{
-				//try
-				//{
-					var end_flag = true;
-					long_A_Size = long_B_Size = 0L;
+				var end_flag = true;
+				long_A_Size = long_B_Size = 0L;
 
-					ab_Data.CheckDirectory(dic_AB, dic_Flag);
+				ab_Data.CheckDirectory(dic_AB, dic_Flag);
 
-					foreach (var ab in dic_AB.Values)
-					{
-						if (end_flag && ab.bool_CopyEnd == false) end_flag = false;
-
-						//long_A_Size += ab.a_Length;
-						//long_B_Size += ab.b_Length;
-					}
-
-					//long_AB_Size = long_A_Size;
-
-					bool_EndFlag = end_flag;
-
-					Console.WriteLine("End = " + bool_EndFlag);
-				/*}
-				catch(Exception e)
+				foreach (var ab in dic_AB.Values)
 				{
-					str_Error  = "Error A " + e.Message;
-					str_Status = "Abend";
-				}*/
+					if (end_flag && ab.bool_CopyEnd == false) end_flag = false;
+
+					//long_A_Size += ab.a_Length;
+					//long_B_Size += ab.b_Length;
+				}
+
+				//long_AB_Size = long_A_Size;
+
+				bool_EndFlag = end_flag;
+
+				Console.WriteLine("End = " + bool_EndFlag);
 			}
 
 			bool_WaitFlag = false;
@@ -344,7 +336,7 @@ namespace TeraLibrary
 		{
 			//2016/08/18 13:10:00
 			//if (fi_B.Exists)
-			if (File.Exists(str_A_FullName))
+			if (File.Exists(str_B_FullName))
 			{
 				//2016/08/18 13:10:00
 				//if (FileCompare(fi_A.FullName, fi_B.FullName))
