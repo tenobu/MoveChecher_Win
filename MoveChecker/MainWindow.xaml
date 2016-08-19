@@ -36,6 +36,11 @@
                Content="無し" Height="23" Margin="66,152,90,0" VerticalAlignment="Top" FontFamily="Calibri"
                Drop="image_To_Base_Drop" AllowDrop="True"/>
 
+        <Button Name="button_Check"
+                Content="Check" Margin="0,211,289,0" VerticalAlignment="Top"
+                FontSize="17" FontWeight="Bold" IsEnabled="False"
+                Height="30" HorizontalAlignment="Right" Width="88"
+                Click="button_Check_Click"/>
         <Button Name="button_Copy"
                 Content="Copy" Margin="0,211,196,0" VerticalAlignment="Top"
                 FontSize="17" FontWeight="Bold" IsEnabled="False"
@@ -67,7 +72,7 @@
         </Button>
         <Label Content="FilesSize" HorizontalAlignment="Left" Margin="43,213,0,0" VerticalAlignment="Top" Width="64" RenderTransformOrigin="0.516,1.464"/>
         <Label Name="label_To_FilesSize"
-               Content="0 Byte" Margin="112,213,289,0" VerticalAlignment="Top"/>
+               Content="0 Byte" Margin="112,213,382,0" VerticalAlignment="Top"/>
 
         <Image Name="image_Hatena"
                HorizontalAlignment="Left" Height="23" Margin="43,105,0,0" VerticalAlignment="Top" Width="23"

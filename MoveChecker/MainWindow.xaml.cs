@@ -119,7 +119,7 @@ namespace MoveChecker
 					//2016/08/17 17:00:00
 					SetTo();
 
-					//SetFromHantei();
+					SetNowHantei();
 					SetHantei();
 				}
 			}
@@ -161,7 +161,7 @@ namespace MoveChecker
 					//2016/08/17 17:00:00
 					SetTo();
 
-					//SetToHantei();
+					SetNowHantei();
 					SetHantei();
 				}
 			}
@@ -274,10 +274,19 @@ namespace MoveChecker
 				this.label_Hantei.Dispatcher.BeginInvoke(
 					new Action(() =>
 					{
+
 						if (ft_Cntl.bool_WaitFlag == true)
 						{
-							label_From_FilesSize.Content = "？ Byte";
-							label_To_FilesSize.Content   = "？ Byte";
+							if (ft_Cntl.long_F_SumiSize == 0L && ft_Cntl.long_T_SumiSize == 0L)
+							{
+								label_From_FilesSize.Content = "？ Byte";
+								label_To_FilesSize  .Content = "？ Byte";
+							}
+							else
+							{
+								label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+								label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+							}
 
 							image_Hatena.Visibility    = Visibility.Visible;
 							image_Equals.Visibility    = Visibility.Hidden;
@@ -289,13 +298,33 @@ namespace MoveChecker
 							button_Delete.IsEnabled = false;
 							button_Cancel.IsEnabled = true;
 
-							progressBar_All.Value   =   0f;
-							progressBar_All.Maximum = 100f;
-							textBlock_件数.Text     = "？ Byte";
-							textBlock_Parcent.Text  = "0%";
+							if (ft_Cntl.long_F_SumiSize == 0L && ft_Cntl.long_T_SumiSize == 0L)
+							{
+								progressBar_All.Value   = 0f;
+								progressBar_All.Maximum = 100f;
+								textBlock_件数.Text     = "？ Byte";
+								textBlock_Parcent.Text  = "0%";
+							}
+							else
+							{
+								var size = (float)ft_Cntl.long_T_SumiSize / (float)ft_Cntl.long_F_SumiSize * 100.0f;
+
+								progressBar_All.Value   = ft_Cntl.long_T_SumiSize;
+								progressBar_All.Maximum = ft_Cntl.long_F_SumiSize;
+								textBlock_件数.Text     = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+								textBlock_Parcent.Text  = ((int)size) + "%";
+							}
 						}
+
 					}));
 			});
+		}
+
+		private void button_Check_Click(object sender, RoutedEventArgs e)
+		{
+			SetNowHantei();
+
+			SetHantei();
 		}
 
 		private void SetHantei()
@@ -310,28 +339,28 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							label_From_FilesSize.Content = ft_Cntl.long_F_Size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
+							label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 
-							var a_size = (float)ft_Cntl.long_F_Size;
-							var b_size = (float)ft_Cntl.long_T_Size;
+							var f_size = ft_Cntl.long_F_SumiSize;
+							var t_size = ft_Cntl.long_T_SumiSize;
 
 							var size = 0f;
-							if (a_size == 0f && b_size == 0f)
+							if (f_size == 0L && t_size == 0L)
 							{
 								progressBar_All.Value   = 0f;
 								progressBar_All.Maximum = 100f;
 							}
 							else
 							{
-								size = b_size / a_size * 100.0f;
+								size = (float)t_size / (float)f_size *100.0f;
 
-								progressBar_All.Maximum = a_size;
-								progressBar_All.Value   = b_size;
+								progressBar_All.Maximum = (double)f_size;
+								progressBar_All.Value   = (double)t_size;
 							}
 
-							textBlock_件数.Text    = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
-							textBlock_Parcent.Text = ((int)size).ToString("#0%");
+							textBlock_件数.Text    = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+							textBlock_Parcent.Text = ((int)size) + "%";
 						}));
 
 					System.Threading.Thread.Sleep(100);
@@ -342,28 +371,28 @@ namespace MoveChecker
 				this.label_Hantei.Dispatcher.BeginInvoke(
 					new Action(() =>
 					{
-						label_From_FilesSize.Content = ft_Cntl.long_F_Size.ToString("#,#0 Byte");
-						label_To_FilesSize.Content   = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
+						label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+						label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 
-						var a_size = (float)ft_Cntl.long_F_Size;
-						var b_size = (float)ft_Cntl.long_T_Size;
+						var f_size = (float)ft_Cntl.long_F_SumiSize;
+						var t_size = (float)ft_Cntl.long_T_SumiSize;
 
 						var size = 0f;
-						if (a_size == 0f && b_size == 0f)
+						if (f_size == 0f && t_size == 0f)
 						{
 							progressBar_All.Value   = 0f;
 							progressBar_All.Maximum = 100f;
 						}
 						else
 						{
-							size = b_size / a_size * 100.0f;
+							size = t_size / f_size * 100.0f;
 
-							progressBar_All.Maximum = a_size;
-							progressBar_All.Value   = b_size;
+							progressBar_All.Maximum = f_size;
+							progressBar_All.Value   = t_size;
 						}
 
-						textBlock_件数.Text     = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
-						textBlock_Parcent.Text  = ((int)size).ToString("#0%");
+						textBlock_件数.Text     = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+						textBlock_Parcent.Text = ((int)size) + "%";
 
 						if (ft_Cntl.str_Status.Equals("Abend"))
 						{
@@ -373,7 +402,8 @@ namespace MoveChecker
 
 							label_Hantei.Content = ft_Cntl.str_Error;
 
-							button_Copy.IsEnabled   = false;
+							button_Check .IsEnabled = false;
+							button_Copy  .IsEnabled = false;
 							button_Delete.IsEnabled = false;
 							button_Cancel.IsEnabled = false;
 						}
@@ -388,23 +418,24 @@ namespace MoveChecker
 
 								label_Hantei.Content = "フォルダは ＝(イコール) です。";
 
-								button_Copy.IsEnabled   = false;
+								button_Check .IsEnabled = true;
+								button_Copy  .IsEnabled = false;
 								button_Delete.IsEnabled = true;
 								button_Cancel.IsEnabled = false;
 							}
 							else
 							{
-								//var a_size = wk_Data.long_F_Size;
-								//var b_size = wk_Data.long_T_Size;
+								//var a_size = wk_Data.long_F_SumiSize;
+								//var b_size = wk_Data.long_T_SumiSize;
 								var str = "";
 
-								if (b_size == 0L)
+								if (t_size == 0L)
 								{
 									str = "Start の準備が出来ました。";
 								}
 								else
 								{
-									var s = 100 - (int)((float)b_size / (float)a_size * 100.0);
+									var s = 100 - (int)((float)t_size / (float)f_size * 100.0);
 
 									str = "Start の準備が出来ました (" + s + "% が残っています)。";
 								}
@@ -415,7 +446,8 @@ namespace MoveChecker
 
 								label_Hantei.Content = str;
 
-								button_Copy.IsEnabled   = true;
+								button_Check .IsEnabled = true;
+								button_Copy  .IsEnabled = true;
 								button_Delete.IsEnabled = false;
 								button_Cancel.IsEnabled = false;
 							}
@@ -433,7 +465,8 @@ namespace MoveChecker
 					this.button_Copy.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							button_Copy.IsEnabled   = false;
+							button_Check .IsEnabled = false;
+							button_Copy  .IsEnabled = false;
 							button_Delete.IsEnabled = false;
 							button_Cancel.IsEnabled = true;
 						}));
@@ -446,18 +479,28 @@ namespace MoveChecker
 						this.button_Copy.Dispatcher.BeginInvoke(
 							new Action(() =>
 							{
-								label_From_FilesSize.Content = ft_Cntl.long_F_Size.ToString("#,#0 Byte");
-								label_To_FilesSize.Content   = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
+								label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+								label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 
-								var a_size = (float)ft_Cntl.long_F_Size;
-								var b_size = (float)ft_Cntl.long_T_Size;
+								var f_size = ft_Cntl.long_F_SumiSize;
+								var t_size = ft_Cntl.long_T_SumiSize;
 
-								var size = b_size / a_size * 100.0f;
+								var size = 0f;
+								if (f_size == 0L && t_size == 0L)
+								{
+									progressBar_All.Value   =   0f;
+									progressBar_All.Maximum = 100f;
+								}
+								else
+								{
+									size = (float)t_size / (float)f_size * 100.0f;
 
-								progressBar_All.Maximum = a_size;
-								progressBar_All.Value   = b_size;
-								textBlock_件数.Text     = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
-								textBlock_Parcent.Text  = ((int)size)        .ToString("#0%");
+									progressBar_All.Maximum = (double)f_size;
+									progressBar_All.Value   = (double)t_size;
+								}
+
+								textBlock_件数   .Text = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+								textBlock_Parcent.Text = ((int)size) + "%";
 							}));
 
 						System.Threading.Thread.Sleep(100);
@@ -468,18 +511,18 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							label_From_FilesSize.Content = ft_Cntl.long_F_Size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
+							label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 
-							var a_size = (float)ft_Cntl.long_F_Size;
-							var b_size = (float)ft_Cntl.long_T_Size;
+							var f_size = (float)ft_Cntl.long_F_SumiSize;
+							var t_size = (float)ft_Cntl.long_T_SumiSize;
 
-							var size = b_size / a_size * 100.0f;
+							var size = t_size / f_size * 100.0f;
 
-							progressBar_All.Maximum = a_size;
-							progressBar_All.Value   = b_size;
-							textBlock_件数.Text     = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
-							textBlock_Parcent.Text  = (int)size + "%";
+							progressBar_All.Maximum = f_size;
+							progressBar_All.Value   = t_size;
+							textBlock_件数.Text     = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+							textBlock_Parcent.Text  = ((int)size)            .ToString("#0%");
 
 							if (ft_Cntl.str_Status.Equals("Abend"))
 							{
@@ -500,6 +543,7 @@ namespace MoveChecker
 
 								label_Hantei.Content = "正常に終了。";
 
+								button_Check.IsEnabled  = true;
 								button_Copy.IsEnabled   = false;
 								button_Delete.IsEnabled = true;
 								button_Cancel.IsEnabled = false;
@@ -515,7 +559,8 @@ namespace MoveChecker
 					button_Copy.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							button_Copy.IsEnabled   = true;
+							button_Check .IsEnabled = true;
+							button_Copy  .IsEnabled = true;
 							button_Delete.IsEnabled = false;
 							button_Cancel.IsEnabled = false;
 						}));
@@ -532,7 +577,8 @@ namespace MoveChecker
 					this.button_Delete.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							button_Copy.IsEnabled   = false;
+							button_Check .IsEnabled = false;
+							button_Copy  .IsEnabled = false;
 							button_Delete.IsEnabled = false;
 							button_Cancel.IsEnabled = true;
 						}));
@@ -549,8 +595,8 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							label_From_FilesSize.Content = ft_Cntl.long_F_Size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
+							label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+							label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 
 							if (ft_Cntl.str_Status.Equals("Abend"))
 							{
@@ -575,8 +621,8 @@ namespace MoveChecker
 								}
 								else
 								{
-									var a_size = ft_Cntl.long_F_Size;
-									var b_size = ft_Cntl.long_T_Size;
+									var a_size = ft_Cntl.long_F_SumiSize;
+									var b_size = ft_Cntl.long_T_SumiSize;
 									var str = "";
 
 									if (a_size == b_size)
@@ -627,80 +673,6 @@ namespace MoveChecker
 			{
 				ft_Cntl.Cancel();
 			}
-
-			/*var task = Task.Factory.StartNew(() =>
-			{
-				try
-				{
-					this.button_Copy.Dispatcher.BeginInvoke(
-						new Action(() =>
-						{
-							button_Copy.IsEnabled   = false;
-							button_Delete.IsEnabled = false;
-							button_Cancel.IsEnabled = true;
-						}));
-
-					ft_Cntl.Cancel();
-
-
-					this.label_Hantei.Dispatcher.BeginInvoke(
-						new Action(() =>
-						{
-							label_From_FilesSize.Content = ft_Cntl.long_F_Size.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
-
-							var a_size = (float)ft_Cntl.long_F_Size;
-							var b_size = (float)ft_Cntl.long_T_Size;
-
-							var size = b_size / a_size * 100.0f;
-
-							progressBar_All.Maximum = a_size;
-							progressBar_All.Value   = b_size;
-							textBlock_件数.Text     = ft_Cntl.long_T_Size.ToString("#,#0 Byte");
-							textBlock_Parcent.Text  = (int)size + "%";
-
-							if (ft_Cntl.str_Status.Equals("Abend"))
-							{
-								image_Hatena.Visibility    = Visibility.Hidden;
-								image_Equals.Visibility    = Visibility.Hidden;
-								image_NotEquals.Visibility = Visibility.Visible;
-
-								label_Hantei.Content = ft_Cntl.str_Error;
-
-								button_Copy.IsEnabled   = true;
-								button_Delete.IsEnabled = false;
-								button_Cancel.IsEnabled = false;
-							}
-							else if (
-								ft_Cntl.str_Status.Equals("Normal"))
-							{
-								image_Hatena.Visibility    = Visibility.Hidden;
-								image_Equals.Visibility    = Visibility.Visible;
-								image_NotEquals.Visibility = Visibility.Hidden;
-
-								label_Hantei.Content = "正常に終了。";
-
-								button_Copy.IsEnabled   = false;
-								button_Delete.IsEnabled = true;
-								button_Cancel.IsEnabled = false;
-							}
-						}));
-				}
-				catch (Exception ex)
-				{
-					Console.WriteLine(ex.Message);
-				}
-				finally
-				{
-					button_Copy.Dispatcher.BeginInvoke(
-						new Action(() =>
-						{
-							button_Copy.IsEnabled = true;
-							button_Delete.IsEnabled = false;
-							button_Cancel.IsEnabled = false;
-						}));
-				}
-			});*/
 		}
 	}
 }
