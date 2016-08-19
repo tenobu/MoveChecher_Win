@@ -17,7 +17,7 @@ namespace TeraLibrary
 		public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
 		public bool bool_EndFlag = false;
 
-		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;//, long_T_NowSize = 0L;
+		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;
 		public long long_F_FileSize = 0L, long_T_FileSize = 0L;
 
 		public FromTo_Data ft_Data = null;
@@ -82,7 +82,7 @@ namespace TeraLibrary
 			str_Status = "Normal";
 
 			var end_flag = true;
-			long_F_SumiSize = long_T_SumiSize = 0L;// long_T_NowSize = 0L;
+			long_F_SumiSize = long_T_SumiSize = 0L;
 
 			var token = cts_Cancel.Token;
 
@@ -148,7 +148,6 @@ namespace TeraLibrary
 				try
 				{
 					var end_flag = true;
-					//long_T_NowSize = 0L;
 
 					ft_Data.Copy(ref long_T_SumiSize, ref long_T_FileSize);
 
@@ -295,9 +294,6 @@ namespace TeraLibrary
 				{
 					long_T_Length = new FileInfo(str_T_FullName).Length;
 				}
-
-				//ft_Cntl.long_F_SumiSize += long_F_Length;
-				//ft_Cntl.long_T_NowSize += long_T_Length;
 			}
 
 			cts_Cancel = _cts;
