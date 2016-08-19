@@ -623,7 +623,12 @@ namespace MoveChecker
 
 		private void button_Cancel_Click(object sender, RoutedEventArgs e)
 		{
-			var task = Task.Factory.StartNew(() =>
+			if (ft_Cntl != null)
+			{
+				ft_Cntl.Cancel();
+			}
+
+			/*var task = Task.Factory.StartNew(() =>
 			{
 				try
 				{
@@ -695,7 +700,7 @@ namespace MoveChecker
 							button_Cancel.IsEnabled = false;
 						}));
 				}
-			});
+			});*/
 		}
 	}
 }
