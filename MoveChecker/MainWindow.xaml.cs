@@ -684,6 +684,8 @@ namespace MoveChecker
 
 		private void SetProgress()
 		{
+			label_Hantei        .Content = ft_Cntl.str_Message;
+
 			label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
 			label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 

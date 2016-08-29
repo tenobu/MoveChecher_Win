@@ -316,8 +316,7 @@ namespace TeraLibrary
 
 			foreach (var c_a_dir in Directory.GetFiles(str_F_FullName))
 			{
-				var list = c_a_dir.Split('\\');
-				var name = list[list.Count() - 1];
+				var name = GetFileName(c_a_dir);
 
 				var ft_data = new FromTo_Data(
 					ft_Cntl, false, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
@@ -343,8 +342,7 @@ namespace TeraLibrary
 
 			foreach (var c_a_dir in Directory.GetDirectories(str_F_FullName))
 			{
-				var list = c_a_dir.Split('\\');
-				var name = list[list.Count() - 1];
+				var name = GetFileName(c_a_dir);
 
 				var ft_data = new FromTo_Data(
 					ft_Cntl, true, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
@@ -392,7 +390,7 @@ namespace TeraLibrary
 					long_t_sumisize += long_T_Length;
 					long_t_filesize++;
 
-					ft_Cntl.str_T_FileName = str_T_FullName;
+					ft_Cntl.str_T_FileName = str_Name;//GetFileName(str_T_FullName);
 				}
 				else
 				{
@@ -493,10 +491,8 @@ namespace TeraLibrary
 			{
 				long_T_Length = new FileInfo(str_T_FullName).Length;
 
-				ft_Cntl.str_T_FileName = str_T_FullName;
+				ft_Cntl.str_T_FileName = str_Name;//GetFileName(str_T_FullName);
 			}
-
-
 		}
 
 		public void Delete()
@@ -600,6 +596,18 @@ namespace TeraLibrary
 			}
 
 			return size;
+		}
+
+		private string GetFileName(string str_fullname)
+		{
+			var list = str_fullname.Split('\\');
+
+			if (list.Count() == 0)
+			{
+				return "";
+			}
+
+			return list[list.Count() - 1];
 		}
 	}
 
