@@ -14,7 +14,7 @@ namespace TeraLibrary
 	public class FromTo_Controller
 	{
 		// 簡素化３
-		public string str_Name = "", str_Status = "", str_Error = "";
+		public string str_Name = "", str_Message = "", str_Status = "", str_Error = "";
 		public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
 		public bool bool_EndFlag = false;
 
@@ -82,7 +82,8 @@ namespace TeraLibrary
 		{
 			bool_WaitFlag = true;
 
-			str_Status = "Normal";
+			str_Message = "フォルダ？をチェック中！！";
+			str_Status  = "Normal";
 
 			var end_flag = true;
 			long_F_SumiSize = long_T_SumiSize = 0L;
@@ -141,7 +142,8 @@ namespace TeraLibrary
 		{
 			bool_WaitFlag = true;
 
-			str_Status = "Normal";
+			str_Message = "コピー中！！";
+			str_Status  = "Normal";
 
 			var token = cts_Cancel.Token;
 
@@ -185,7 +187,8 @@ namespace TeraLibrary
 		{
 			bool_WaitFlag = true;
 
-			str_Status = "Normal";
+			str_Message = "削除中！！";
+			str_Status  = "Normal";
 
 			var token = cts_Cancel.Token;
 
