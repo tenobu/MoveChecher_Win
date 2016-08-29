@@ -21,6 +21,8 @@ namespace TeraLibrary
 		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;
 		public long long_F_FileSize = 0L, long_T_FileSize = 0L;
 
+		public string str_T_FileName = "";
+
 		public FromTo_Data ft_Data = null;
 
 		public Dictionary<string, FromTo_Data> dic_FT = null;
@@ -386,6 +388,8 @@ namespace TeraLibrary
 
 					long_t_sumisize += long_T_Length;
 					long_t_filesize++;
+
+					ft_Cntl.str_T_FileName = str_T_FullName;
 				}
 				else
 				{
@@ -413,6 +417,8 @@ namespace TeraLibrary
 
 					if (Directory.Exists(str_T_FullName) == false)
 					{
+						ft_Cntl.str_T_FileName = str_T_FullName;
+
 						Directory.CreateDirectory(str_T_FullName);
 
 						goto loop;
@@ -483,6 +489,8 @@ namespace TeraLibrary
 			if (File.Exists(str_T_FullName))
 			{
 				long_T_Length = new FileInfo(str_T_FullName).Length;
+
+				ft_Cntl.str_T_FileName = str_T_FullName;
 			}
 
 
@@ -507,6 +515,8 @@ namespace TeraLibrary
 					{
 						if (File.Exists(str_F_FullName))
 						{
+							ft_Cntl.str_T_FileName = str_T_FullName;
+						
 							File.Delete(str_F_FullName);
 
 							if (File.Exists(str_F_FullName)) goto loop;
@@ -526,6 +536,8 @@ namespace TeraLibrary
 
 					if (Directory.Exists(str_F_FullName))
 					{
+						ft_Cntl.str_T_FileName = str_T_FullName;
+
 						Directory.Delete(str_F_FullName);
 
 						if (Directory.Exists(str_F_FullName)) goto loop;
