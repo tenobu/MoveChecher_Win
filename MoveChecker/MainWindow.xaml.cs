@@ -277,11 +277,13 @@ namespace MoveChecker
 							{
 								label_From_FilesSize.Content = "？ Byte";
 								label_To_FilesSize  .Content = "？ Byte";
+								textBlock_File      .Text    = "?";
 							}
 							else
 							{
 								label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
 								label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+								textBlock_File      .Text    = ft_Cntl.str_T_FileName;
 							}
 
 							image_Hatena.Visibility    = Visibility.Visible;
@@ -684,6 +686,8 @@ namespace MoveChecker
 		{
 			label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
 			label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
+
+			textBlock_File      .Text    = ft_Cntl.str_T_FileName;
 
 			var f_size = ft_Cntl.long_F_SumiSize;
 			var t_size = ft_Cntl.long_T_SumiSize;
