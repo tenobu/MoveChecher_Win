@@ -292,7 +292,8 @@ namespace MoveChecker
 
 							label_Hantei.Content = "フォルダ？をチェック中！！";
 
-							button_Copy.IsEnabled   = false;
+							button_Check .IsEnabled = false;
+							button_Copy  .IsEnabled = false;
 							button_Delete.IsEnabled = false;
 							button_Cancel.IsEnabled = true;
 
