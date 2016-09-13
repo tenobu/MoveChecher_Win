@@ -15,7 +15,7 @@ namespace TeraLibrary
 	{
 		// 簡素化３
 		public string str_Name = "", str_Message = "", str_Status = "", str_Error = "";
-		public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
+		//public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
 		public bool bool_EndFlag = false;
 
 		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;
@@ -278,6 +278,7 @@ namespace TeraLibrary
 		{
 			ft_Cntl = ft;
 
+			ft.
 			str_Name = str_name;
 
 			str_F_FullName = str_f_full;
