@@ -26,7 +26,6 @@ namespace TeraLibrary
 		public FromTo_Data ft_Data = null;
 
 		public Dictionary<string, FromTo_Data> dic_FT = null;
-		//public Dictionary<FromTo_Data, FT_Flag> dic_Flag = null;
 
 		public bool bool_WaitFlag = false;
 
@@ -69,7 +68,6 @@ namespace TeraLibrary
 			}
 
 			dic_FT   = new Dictionary<string , FromTo_Data>();
-			//dic_Flag = new Dictionary<FromTo_Data, FT_Flag>();
 
 			str_Name = di_a.Name;
 
@@ -95,7 +93,7 @@ namespace TeraLibrary
 				try
 				{
 					ft_Data.CheckDirectory(
-						dic_FT, /*dic_Flag,*/
+						dic_FT,
 						ref long_F_SumiSize, ref long_T_SumiSize,
 						ref long_F_FileSize, ref long_T_FileSize);
 
@@ -306,7 +304,7 @@ namespace TeraLibrary
 		}
 
 		public void CheckDirectory(
-			Dictionary<string, FromTo_Data> dic_FT, /*Dictionary<FromTo_Data, FT_Flag> dic_Flag,*/
+			Dictionary<string, FromTo_Data> dic_FT,
 			ref long long_f_sumisize, ref long long_t_sumisize,
 			ref long long_f_filesize, ref long long_t_filesize)
 		{
@@ -327,7 +325,7 @@ namespace TeraLibrary
 				}
 
 				ft_data.CheckFile(
-					dic_FT, /*dic_Flag,*/
+					dic_FT,
 					ref long_f_sumisize, ref long_t_sumisize,
 					ref long_f_filesize, ref long_t_filesize);
 
@@ -353,7 +351,7 @@ namespace TeraLibrary
 				}
 
 				ft_data.CheckDirectory(
-					dic_FT, /*dic_Flag,*/
+					dic_FT,
 					ref long_f_sumisize, ref long_t_sumisize,
 					ref long_f_filesize, ref long_t_filesize);
 
@@ -374,7 +372,7 @@ namespace TeraLibrary
 		}
 
 		public void CheckFile(
-			Dictionary<string, FromTo_Data> dic_AB, /*Dictionary<FromTo_Data, FT_Flag> dic_Flag,*/
+			Dictionary<string, FromTo_Data> dic_AB,
 			ref long long_f_sumisize, ref long long_t_sumisize,
 			ref long long_f_filesize, ref long long_t_filesize)
 		{
@@ -610,15 +608,4 @@ namespace TeraLibrary
 			return list[list.Count() - 1];
 		}
 	}
-
-	/*public class FT_Flag
-	{
-		public bool bool_EndFlag = false;
-
-
-		public FT_Flag()
-		{
-
-		}
-	}*/
 }
