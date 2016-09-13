@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace TeraLibrary
 {
-	public class FromTo_Controller
+	public class FromTo_Controller2
 	{
 		// 簡素化３
 		public string str_Name = "", str_Message = "", str_Status = "", str_Error = "";
@@ -23,17 +23,17 @@ namespace TeraLibrary
 
 		public string str_T_FileName = "";
 
-		public FromTo_Data ft_Data = null;
+		public FromTo_Data2 ft_Data = null;
 
-		public Dictionary<string, FromTo_Data> dic_FT = null;
-		public Dictionary<FromTo_Data, FT_Flag> dic_Flag = null;
+		public Dictionary<string, FromTo_Data2> dic_FT = null;
+		public Dictionary<FromTo_Data2, FT_Flag2> dic_Flag = null;
 
 		public bool bool_WaitFlag = false;
 
 		private CancellationTokenSource cts_Cancel = null;
 
 
-		public FromTo_Controller(string a_path, string b_base_path)
+		public FromTo_Controller2(string a_path, string b_base_path)
 		{
 			bool_WaitFlag = true;
 
@@ -68,14 +68,14 @@ namespace TeraLibrary
 				return;
 			}
 
-			dic_FT   = new Dictionary<string , FromTo_Data>();
-			dic_Flag = new Dictionary<FromTo_Data, FT_Flag>();
+			dic_FT   = new Dictionary<string , FromTo_Data2>();
+			dic_Flag = new Dictionary<FromTo_Data2, FT_Flag2>();
 
 			str_Name = di_a.Name;
 
 			cts_Cancel = new CancellationTokenSource();
 
-			ft_Data = new FromTo_Data(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
+			ft_Data = new FromTo_Data2(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
 		}
 
 		public void Check()
@@ -260,22 +260,22 @@ namespace TeraLibrary
 		}
 	}
 
-	public class FromTo_Data
+	public class FromTo_Data2
 	{
-		public FromTo_Controller ft_Cntl = null;
+		public FromTo_Controller2 ft_Cntl = null;
 
 		public string str_Type = "";
 		public string str_Name = "", str_F_FullName = "", str_T_FullName = "";
 		public long long_F_Length = 0, long_T_Length = 0;
 		public bool bool_To_Flag = false, bool_CopyEnd = false, bool_DeleteEnd = false;
 
-		public List<FromTo_Data> ft_Datas = null;
+		public List<FromTo_Data2> ft_Datas = null;
 
 		private CancellationTokenSource cts_Cancel = null;
 
 
-		public FromTo_Data(
-			FromTo_Controller ft, bool is_dir, string str_name, string str_f_full, string str_t_full,
+		public FromTo_Data2(
+			FromTo_Controller2 ft, bool is_dir, string str_name, string str_f_full, string str_t_full,
 			CancellationTokenSource _cts)
 		{
 			ft_Cntl = ft;
@@ -306,19 +306,19 @@ namespace TeraLibrary
 		}
 
 		public void CheckDirectory(
-			Dictionary<string, FromTo_Data> dic_FT, Dictionary<FromTo_Data, FT_Flag> dic_Flag,
+			Dictionary<string, FromTo_Data2> dic_FT, Dictionary<FromTo_Data2, FT_Flag2> dic_Flag,
 			ref long long_f_sumisize, ref long long_t_sumisize,
 			ref long long_f_filesize, ref long long_t_filesize)
 		{
 			var token = cts_Cancel.Token;
 
-			ft_Datas = new List<FromTo_Data>();
+			ft_Datas = new List<FromTo_Data2>();
 
 			foreach (var c_a_dir in Directory.GetFiles(str_F_FullName))
 			{
 				var name = GetFileName(c_a_dir);
 
-				var ft_data = new FromTo_Data(
+				var ft_data = new FromTo_Data2(
 					ft_Cntl, false, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
@@ -344,7 +344,7 @@ namespace TeraLibrary
 			{
 				var name = GetFileName(c_a_dir);
 
-				var ft_data = new FromTo_Data(
+				var ft_data = new FromTo_Data2(
 					ft_Cntl, true, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
@@ -374,7 +374,7 @@ namespace TeraLibrary
 		}
 
 		public void CheckFile(
-			Dictionary<string, FromTo_Data> dic_AB, Dictionary<FromTo_Data, FT_Flag> dic_Flag,
+			Dictionary<string, FromTo_Data2> dic_AB, Dictionary<FromTo_Data2, FT_Flag2> dic_Flag,
 			ref long long_f_sumisize, ref long long_t_sumisize,
 			ref long long_f_filesize, ref long long_t_filesize)
 		{
@@ -611,12 +611,12 @@ namespace TeraLibrary
 		}
 	}
 
-	public class FT_Flag
+	public class FT_Flag2
 	{
 		public bool bool_EndFlag = false;
 
 
-		public FT_Flag()
+		public FT_Flag2()
 		{
 
 		}
