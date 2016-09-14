@@ -92,10 +92,7 @@ namespace TeraLibrary
 
 				try
 				{
-					ft_Data.CheckDirectory(
-						dic_FT,
-						ref long_F_SumiSize, ref long_T_SumiSize,
-						ref long_F_FileSize, ref long_T_FileSize);
+					ft_Data.CheckDirectory(dic_FT);
 
 					if (token.IsCancellationRequested)
 					{
@@ -152,7 +149,7 @@ namespace TeraLibrary
 				{
 					var end_flag = true;
 
-					ft_Data.Copy(ref long_T_SumiSize, ref long_T_FileSize);
+					ft_Data.Copy(/*ref long_T_SumiSize, ref long_T_FileSize*/);
 
 					if (token.IsCancellationRequested)
 					{
@@ -305,9 +302,7 @@ namespace TeraLibrary
 		}
 
 		public void CheckDirectory(
-			Dictionary<string, FromTo_Data> dic_FT,
-			ref long long_f_sumisize, ref long long_t_sumisize,
-			ref long long_f_filesize, ref long long_t_filesize)
+			Dictionary<string, FromTo_Data> dic_FT)
 		{
 			var token = cts_Cancel.Token;
 
@@ -325,10 +320,7 @@ namespace TeraLibrary
 					return;
 				}
 
-				ft_data.CheckFile(
-					dic_FT,
-					ref long_f_sumisize, ref long_t_sumisize,
-					ref long_f_filesize, ref long_t_filesize);
+				ft_data.CheckFile(dic_FT);
 
 				ft_Datas.Add(ft_data);
 
@@ -351,10 +343,7 @@ namespace TeraLibrary
 					return;
 				}
 
-				ft_data.CheckDirectory(
-					dic_FT,
-					ref long_f_sumisize, ref long_t_sumisize,
-					ref long_f_filesize, ref long_t_filesize);
+				ft_data.CheckDirectory(dic_FT);
 
 				ft_Datas.Add(ft_data);
 
@@ -373,12 +362,10 @@ namespace TeraLibrary
 		}
 
 		public void CheckFile(
-			Dictionary<string, FromTo_Data> dic_AB,
-			ref long long_f_sumisize, ref long long_t_sumisize,
-			ref long long_f_filesize, ref long long_t_filesize)
+			Dictionary<string, FromTo_Data> dic_AB)
 		{
-			long_f_sumisize += long_F_Length;
-			long_f_filesize++;
+			ft_Cntl.long_F_SumiSize += long_F_Length;
+			ft_Cntl.long_F_FileSize++;
 
 			if (File.Exists(str_T_FullName))
 			{
@@ -386,8 +373,8 @@ namespace TeraLibrary
 				{
 					bool_CopyEnd = true;
 
-					long_t_sumisize += long_T_Length;
-					long_t_filesize++;
+					ft_Cntl.long_T_SumiSize += long_T_Length;
+					ft_Cntl.long_T_FileSize++;
 
 					ft_Cntl.str_T_FileName = str_Name;//GetFileName(str_T_FullName);
 				}
@@ -400,7 +387,7 @@ namespace TeraLibrary
 			dic_AB.Add(str_F_FullName, this);
 		}
 
-		public void Copy(ref long long_length, ref long long_files)
+		public void Copy(/*ref long long_length, ref long long_files*/)
 		{
 			var token = cts_Cancel.Token;
 
@@ -431,7 +418,7 @@ namespace TeraLibrary
 
 					foreach (var ft_data in ft_Datas)
 					{
-						ft_data.Copy(ref long_length, ref long_files);
+						ft_data.Copy(/*ref long_length, ref long_files*/);
 
 						if (token.IsCancellationRequested)
 						{
@@ -465,8 +452,10 @@ namespace TeraLibrary
 								{
 									bool_CopyEnd = true;
 
-									long_length += long_T_Length;
-									long_files++;
+									/*long_t_length += long_T_Length;
+									long_t_files++;*/
+									ft_Cntl.long_T_SumiSize += long_T_Length;
+									ft_Cntl.long_T_FileSize++;
 								}
 							}
 							else
