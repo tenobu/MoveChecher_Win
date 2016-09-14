@@ -40,7 +40,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TeraLibrary">
-      <HintPath>..\TeraLibrary\bin\Debug\TeraLibrary.dll</HintPath>
+      <HintPath>..\..\..\..\Git-Project\TeraLibrary\TeraLibrary\TeraLibrary\bin\Debug\TeraLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

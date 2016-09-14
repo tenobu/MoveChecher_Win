@@ -66,7 +66,7 @@ namespace TeraLibrary
 				return;
 			}
 
-			//dic_FT   = new Dictionary<string , FromTo_Data>();
+			dic_FT   = new Dictionary<string , FromTo_Data>();
 
 			str_Name = di_a.Name;
 
