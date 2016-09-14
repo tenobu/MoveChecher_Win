@@ -15,7 +15,6 @@ namespace TeraLibrary
 	{
 		// 簡素化３
 		public string str_Name = "", str_Message = "", str_Status = "", str_Error = "";
-		//public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
 		public bool bool_EndFlag = false;
 
 		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;
@@ -67,7 +66,7 @@ namespace TeraLibrary
 				return;
 			}
 
-			dic_FT   = new Dictionary<string , FromTo_Data>();
+			//dic_FT   = new Dictionary<string , FromTo_Data>();
 
 			str_Name = di_a.Name;
 

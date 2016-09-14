@@ -338,29 +338,6 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							/*label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-
-							var f_size = ft_Cntl.long_F_SumiSize;
-							var t_size = ft_Cntl.long_T_SumiSize;
-
-							var size = 0f;
-							if (f_size == 0L && t_size == 0L)
-							{
-								progressBar_All.Value   = 0f;
-								progressBar_All.Maximum = 100f;
-							}
-							else
-							{
-								size = (float)t_size / (float)f_size *100.0f;
-
-								progressBar_All.Maximum = (double)f_size;
-								progressBar_All.Value   = (double)t_size;
-							}
-
-							textBlock_件数.Text    = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-							textBlock_Parcent.Text = ((int)size) + "%";*/
-
 							SetProgress();
 						}));
 
@@ -372,29 +349,6 @@ namespace MoveChecker
 				this.label_Hantei.Dispatcher.BeginInvoke(
 					new Action(() =>
 					{
-						/*label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
-						label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-
-						var f_size = ft_Cntl.long_F_SumiSize;
-						var t_size = ft_Cntl.long_T_SumiSize;
-
-						var size = 0f;
-						if (f_size == 0f && t_size == 0f)
-						{
-							progressBar_All.Value   =   0f;
-							progressBar_All.Maximum = 100f;
-						}
-						else
-						{
-							size = (float)t_size / (float)f_size * 100.0f;
-
-							progressBar_All.Maximum = (double)f_size;
-							progressBar_All.Value   = (double)t_size;
-						}
-
-						textBlock_件数.Text     = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-						textBlock_Parcent.Text = ((int)size) + "%";*/
-
 						SetProgress();
 
 						if (ft_Cntl.str_Status.Equals("Abend"))
@@ -483,29 +437,6 @@ namespace MoveChecker
 						this.button_Copy.Dispatcher.BeginInvoke(
 							new Action(() =>
 							{
-								/*label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
-								label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-
-								var f_size = ft_Cntl.long_F_SumiSize;
-								var t_size = ft_Cntl.long_T_SumiSize;
-
-								var size = 0f;
-								if (f_size == 0L && t_size == 0L)
-								{
-									progressBar_All.Value   =   0f;
-									progressBar_All.Maximum = 100f;
-								}
-								else
-								{
-									size = (float)t_size / (float)f_size * 100.0f;
-
-									progressBar_All.Maximum = (double)f_size;
-									progressBar_All.Value   = (double)t_size;
-								}
-
-								textBlock_件数   .Text = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-								textBlock_Parcent.Text = ((int)size) + "%";*/
-
 								SetProgress();
 							}));
 
@@ -517,19 +448,6 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							/*label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
-							label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-
-							var f_size = ft_Cntl.long_F_SumiSize;
-							var t_size = ft_Cntl.long_T_SumiSize;
-
-							var size = t_size / f_size * 100.0f;
-
-							progressBar_All.Maximum = f_size;
-							progressBar_All.Value   = t_size;
-							textBlock_件数.Text     = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
-							textBlock_Parcent.Text  = ((int)size)            .ToString("#0%");*/
-
 							SetProgress();
 
 							if (ft_Cntl.str_Status.Equals("Abend"))
@@ -540,7 +458,10 @@ namespace MoveChecker
 
 								label_Hantei.Content = ft_Cntl.str_Error;
 
+								button_Check .IsEnabled = true;
+								button_Copy  .IsEnabled = true;
 								button_Delete.IsEnabled = false;
+								button_Cancel.IsEnabled = false;
 							}
 							else if (
 								ft_Cntl.str_Status.Equals("Normal"))
@@ -564,14 +485,6 @@ namespace MoveChecker
 				}
 				finally
 				{
-					button_Copy.Dispatcher.BeginInvoke(
-						new Action(() =>
-						{
-							button_Check .IsEnabled = true;
-							button_Copy  .IsEnabled = true;
-							button_Delete.IsEnabled = false;
-							button_Cancel.IsEnabled = false;
-						}));
 				}
 			});
 		}
