@@ -28,7 +28,7 @@ namespace MoveChecker
 
 		public bool bool_WaitFlag = false;
 
-		private CancellationTokenSource cts_Cancel = null;
+		private CancellationTokenSource cts_Cancel = new CancellationTokenSource();
 
 
 		public FromTo_Controller(string a_path, string b_base_path)
@@ -69,8 +69,6 @@ namespace MoveChecker
 			dic_FT   = new Dictionary<string , FromTo_Data>();
 
 			str_Name = di_a.Name;
-
-			cts_Cancel = new CancellationTokenSource();
 
 			ft_Data = new FromTo_Data(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
 		}
