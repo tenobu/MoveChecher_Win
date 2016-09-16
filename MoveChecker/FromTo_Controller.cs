@@ -80,7 +80,7 @@ namespace MoveChecker
 			str_Message = "フォルダ？をチェック中！！";
 			str_Status  = "Normal";
 
-			var end_flag = true;
+			//var end_flag = true;
 			long_F_SumiSize = long_T_SumiSize = 0L;
 
 			var token = cts_Cancel.Token;
@@ -89,7 +89,7 @@ namespace MoveChecker
 
 				try
 				{
-					ft_Data.CheckDirectory(dic_FT);
+					bool_EndFlag &= ft_Data.CheckDirectory(/*dic_FT*/);
 
 					if (token.IsCancellationRequested)
 					{
@@ -99,9 +99,9 @@ namespace MoveChecker
 						return;
 					}
 
-					foreach (var ab in dic_FT.Values)
+					/*foreach (var ft_d in dic_FT.Values)
 					{
-						if (end_flag && ab.bool_CopyEnd == false) end_flag = false;
+						if (end_flag && ft_d.bool_CopyEnd == false) end_flag = false;
 
 						if (token.IsCancellationRequested)
 						{
@@ -110,9 +110,9 @@ namespace MoveChecker
 
 							return;
 						}
-					}
+					}*/
 
-					bool_EndFlag = end_flag;
+					//bool_EndFlag = end_flag;
 
 					Console.WriteLine("End = " + bool_EndFlag);
 				}
@@ -298,11 +298,14 @@ namespace MoveChecker
 			cts_Cancel = _cts;
 		}
 
-		public void CheckDirectory(Dictionary<string, FromTo_Data> dic_FT)
+		public bool CheckDirectory(/*Dictionary<string, FromTo_Data> dic_FT*/)
 		{
 			var token = cts_Cancel.Token;
 
 			ft_Datas = new List<FromTo_Data>();
+
+			var end_flag_f = true;
+			var end_flag_d = true;
 
 			foreach (var c_a_dir in Directory.GetFiles(str_F_FullName))
 			{
@@ -313,16 +316,16 @@ namespace MoveChecker
 
 				if (token.IsCancellationRequested)
 				{
-					return;
+					return false;
 				}
 
-				ft_data.CheckFile(dic_FT);
+				end_flag_f &= ft_data.CheckFile(/*dic_FT*/);
 
 				ft_Datas.Add(ft_data);
 
 				if (token.IsCancellationRequested)
 				{
-					return;
+					return false;
 				}
 			}
 
@@ -336,16 +339,16 @@ namespace MoveChecker
 
 				if (token.IsCancellationRequested)
 				{
-					return;
+					return false;
 				}
 
-				ft_data.CheckDirectory(dic_FT);
+				end_flag_d &= ft_data.CheckDirectory(/*dic_FT*/);
 
 				ft_Datas.Add(ft_data);
 
 				if (token.IsCancellationRequested)
 				{
-					return;
+					return false;
 				}
 			}
 
@@ -354,11 +357,15 @@ namespace MoveChecker
 				bool_CopyEnd = true;
 			}
 
-			dic_FT.Add(str_F_FullName, this);
+			//dic_FT.Add(str_F_FullName, this);
+
+			return end_flag_f & end_flag_d;
 		}
 
-		public void CheckFile(Dictionary<string, FromTo_Data> dic_AB)
+		public bool CheckFile(/*Dictionary<string, FromTo_Data> dic_AB*/)
 		{
+			var end_flag_f = true;
+
 			ft_Cntl.long_F_SumiSize += long_F_Length;
 			ft_Cntl.long_F_FileSize++;
 
@@ -379,7 +386,9 @@ namespace MoveChecker
 				}
 			}
 
-			dic_AB.Add(str_F_FullName, this);
+			//dic_AB.Add(str_F_FullName, this);
+
+			return end_flag_f;
 		}
 
 		public void Copy()
