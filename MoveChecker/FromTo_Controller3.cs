@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace MoveChecker
 {
-	public class FromTo_Controller
+	public class FromTo_Controller3
 	{
 		// 簡素化３
 		public string str_Name = "", str_Message = "", str_Status = "", str_Error = "";
@@ -22,25 +22,22 @@ namespace MoveChecker
 
 		public string str_T_FileName = "";
 
-		public FromTo_Data ft_Data = null;
+		public FromTo_Data3 ft_Data = null;
 
-		public Dictionary<string, FromTo_Data> dic_FT = null;
+		public Dictionary<string, FromTo_Data3> dic_FT = null;
 
 		public bool bool_WaitFlag = false;
 
 		private CancellationTokenSource cts_Cancel = new CancellationTokenSource();
 
 
-		// FromTo_Cntl(string f_path, string t_path)
-		// 
-		//
-		public FromTo_Controller(string f_path, string t_base_path)
+		public FromTo_Controller3(string a_path, string b_base_path)
 		{
 			bool_WaitFlag = true;
 
 			str_Status = "Normal";
 
-			if (Directory.Exists(f_path) == false)
+			if (Directory.Exists(a_path) == false)
 			{
 				str_Error = "From がディレクトリで無い！！";
 				str_Status = "Abend";
@@ -48,9 +45,9 @@ namespace MoveChecker
 				return;
 			}
 
-			var di_a = new DirectoryInfo(f_path);
+			var di_a = new DirectoryInfo(a_path);
 
-			if (Directory.Exists(t_base_path) == false)
+			if (Directory.Exists(b_base_path) == false)
 			{
 				str_Error = "ToBase がディレクトリで無い！！";
 				str_Status = "Abend";
@@ -58,9 +55,9 @@ namespace MoveChecker
 				return;
 			}
 
-			var di_b = new DirectoryInfo((t_base_path + @"\" + di_a.Name).Replace(@"\\", @"\"));
+			var di_b = new DirectoryInfo((b_base_path + @"\" + di_a.Name).Replace(@"\\", @"\"));
 
-			if (di_a.FullName.Equals(t_base_path) ||
+			if (di_a.FullName.Equals(b_base_path) ||
 				di_a.FullName.Equals(di_b.FullName))
 			{
 				str_Error = "同じディレクトリ！！";
@@ -69,11 +66,11 @@ namespace MoveChecker
 				return;
 			}
 
-			dic_FT   = new Dictionary<string , FromTo_Data>();
+			dic_FT   = new Dictionary<string , FromTo_Data3>();
 
 			str_Name = di_a.Name;
 
-			ft_Data = new FromTo_Data(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
+			ft_Data = new FromTo_Data3(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
 		}
 
 		public void Check()
@@ -83,7 +80,7 @@ namespace MoveChecker
 			str_Message = "フォルダ？をチェック中！！";
 			str_Status  = "Normal";
 
-			//var end_flag = true;
+			var end_flag = true;
 			long_F_SumiSize = long_T_SumiSize = 0L;
 
 			var token = cts_Cancel.Token;
@@ -92,7 +89,7 @@ namespace MoveChecker
 
 				try
 				{
-					bool_EndFlag &= ft_Data.CheckDirectory(/*dic_FT*/);
+					ft_Data.CheckDirectory(dic_FT);
 
 					if (token.IsCancellationRequested)
 					{
@@ -102,9 +99,9 @@ namespace MoveChecker
 						return;
 					}
 
-					/*foreach (var ft_d in dic_FT.Values)
+					foreach (var ab in dic_FT.Values)
 					{
-						if (end_flag && ft_d.bool_CopyEnd == false) end_flag = false;
+						if (end_flag && ab.bool_CopyEnd == false) end_flag = false;
 
 						if (token.IsCancellationRequested)
 						{
@@ -113,9 +110,9 @@ namespace MoveChecker
 
 							return;
 						}
-					}*/
+					}
 
-					//bool_EndFlag = end_flag;
+					bool_EndFlag = end_flag;
 
 					Console.WriteLine("End = " + bool_EndFlag);
 				}
@@ -255,22 +252,22 @@ namespace MoveChecker
 		}
 	}
 
-	public class FromTo_Data
+	public class FromTo_Data3
 	{
-		public FromTo_Controller ft_Cntl = null;
+		public FromTo_Controller3 ft_Cntl = null;
 
 		public string str_Type = "";
 		public string str_Name = "", str_F_FullName = "", str_T_FullName = "";
 		public long long_F_Length = 0, long_T_Length = 0;
 		public bool bool_To_Flag = false, bool_CopyEnd = false, bool_DeleteEnd = false;
 
-		public List<FromTo_Data> ft_Datas = null;
+		public List<FromTo_Data3> ft_Datas = null;
 
 		private CancellationTokenSource cts_Cancel = null;
 
 
-		public FromTo_Data(
-			FromTo_Controller ft, bool is_dir, string str_name, string str_f_full, string str_t_full,
+		public FromTo_Data3(
+			FromTo_Controller3 ft, bool is_dir, string str_name, string str_f_full, string str_t_full,
 			CancellationTokenSource _cts)
 		{
 			ft_Cntl = ft;
@@ -301,34 +298,31 @@ namespace MoveChecker
 			cts_Cancel = _cts;
 		}
 
-		public bool CheckDirectory(/*Dictionary<string, FromTo_Data> dic_FT*/)
+		public void CheckDirectory(Dictionary<string, FromTo_Data3> dic_FT)
 		{
 			var token = cts_Cancel.Token;
 
-			ft_Datas = new List<FromTo_Data>();
-
-			var end_flag_f = true;
-			var end_flag_d = true;
+			ft_Datas = new List<FromTo_Data3>();
 
 			foreach (var c_a_dir in Directory.GetFiles(str_F_FullName))
 			{
 				var name = GetFileName(c_a_dir);
 
-				var ft_data = new FromTo_Data(
+				var ft_data = new FromTo_Data3(
 					ft_Cntl, false, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
 				{
-					return false;
+					return;
 				}
 
-				end_flag_f &= ft_data.CheckFile(/*dic_FT*/);
+				ft_data.CheckFile(dic_FT);
 
 				ft_Datas.Add(ft_data);
 
 				if (token.IsCancellationRequested)
 				{
-					return false;
+					return;
 				}
 			}
 
@@ -337,21 +331,21 @@ namespace MoveChecker
 			{
 				var name = GetFileName(c_a_dir);
 
-				var ft_data = new FromTo_Data(
+				var ft_data = new FromTo_Data3(
 					ft_Cntl, true, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
 				{
-					return false;
+					return;
 				}
 
-				end_flag_d &= ft_data.CheckDirectory(/*dic_FT*/);
+				ft_data.CheckDirectory(dic_FT);
 
 				ft_Datas.Add(ft_data);
 
 				if (token.IsCancellationRequested)
 				{
-					return false;
+					return;
 				}
 			}
 
@@ -360,15 +354,11 @@ namespace MoveChecker
 				bool_CopyEnd = true;
 			}
 
-			//dic_FT.Add(str_F_FullName, this);
-
-			return end_flag_f & end_flag_d;
+			dic_FT.Add(str_F_FullName, this);
 		}
 
-		public bool CheckFile(/*Dictionary<string, FromTo_Data> dic_AB*/)
+		public void CheckFile(Dictionary<string, FromTo_Data3> dic_AB)
 		{
-			var end_flag_f = true;
-
 			ft_Cntl.long_F_SumiSize += long_F_Length;
 			ft_Cntl.long_F_FileSize++;
 
@@ -389,9 +379,7 @@ namespace MoveChecker
 				}
 			}
 
-			//dic_AB.Add(str_F_FullName, this);
-
-			return end_flag_f;
+			dic_AB.Add(str_F_FullName, this);
 		}
 
 		public void Copy()
