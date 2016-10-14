@@ -9,12 +9,13 @@ using System.Runtime.Serialization;
 using System.Threading;
 //using System.Threading.Tasks;
 
-namespace TeraLibrary
+namespace MoveChecker
 {
-	public class FromTo_Controller
+	public class FromTo_Controller2
 	{
 		// 簡素化３
 		public string str_Name = "", str_Message = "", str_Status = "", str_Error = "";
+		public DateTime dt_Start = DateTime.Now, dt_Now = DateTime.Now, dt_End = DateTime.Now;
 		public bool bool_EndFlag = false;
 
 		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;
@@ -22,16 +23,17 @@ namespace TeraLibrary
 
 		public string str_T_FileName = "";
 
-		public FromTo_Data ft_Data = null;
+		public FromTo_Data2 ft_Data = null;
 
-		public Dictionary<string, FromTo_Data> dic_FT = null;
+		public Dictionary<string, FromTo_Data2> dic_FT = null;
+		public Dictionary<FromTo_Data2, FT_Flag2> dic_Flag = null;
 
 		public bool bool_WaitFlag = false;
 
 		private CancellationTokenSource cts_Cancel = null;
 
 
-		public FromTo_Controller(string a_path, string b_base_path)
+		public FromTo_Controller2(string a_path, string b_base_path)
 		{
 			bool_WaitFlag = true;
 
@@ -66,13 +68,14 @@ namespace TeraLibrary
 				return;
 			}
 
-			dic_FT   = new Dictionary<string , FromTo_Data>();
+			dic_FT   = new Dictionary<string , FromTo_Data2>();
+			dic_Flag = new Dictionary<FromTo_Data2, FT_Flag2>();
 
 			str_Name = di_a.Name;
 
 			cts_Cancel = new CancellationTokenSource();
 
-			ft_Data = new FromTo_Data(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
+			ft_Data = new FromTo_Data2(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
 		}
 
 		public void Check()
@@ -91,7 +94,10 @@ namespace TeraLibrary
 
 				try
 				{
-					ft_Data.CheckDirectory(dic_FT);
+					ft_Data.CheckDirectory(
+						dic_FT, dic_Flag,
+						ref long_F_SumiSize, ref long_T_SumiSize,
+						ref long_F_FileSize, ref long_T_FileSize);
 
 					if (token.IsCancellationRequested)
 					{
@@ -148,7 +154,7 @@ namespace TeraLibrary
 				{
 					var end_flag = true;
 
-					ft_Data.Copy();
+					ft_Data.Copy(ref long_T_SumiSize, ref long_T_FileSize);
 
 					if (token.IsCancellationRequested)
 					{
@@ -254,27 +260,26 @@ namespace TeraLibrary
 		}
 	}
 
-	public class FromTo_Data
+	public class FromTo_Data2
 	{
-		public FromTo_Controller ft_Cntl = null;
+		public FromTo_Controller2 ft_Cntl = null;
 
 		public string str_Type = "";
 		public string str_Name = "", str_F_FullName = "", str_T_FullName = "";
 		public long long_F_Length = 0, long_T_Length = 0;
 		public bool bool_To_Flag = false, bool_CopyEnd = false, bool_DeleteEnd = false;
 
-		public List<FromTo_Data> ft_Datas = null;
+		public List<FromTo_Data2> ft_Datas = null;
 
 		private CancellationTokenSource cts_Cancel = null;
 
 
-		public FromTo_Data(
-			FromTo_Controller ft, bool is_dir, string str_name, string str_f_full, string str_t_full,
+		public FromTo_Data2(
+			FromTo_Controller2 ft, bool is_dir, string str_name, string str_f_full, string str_t_full,
 			CancellationTokenSource _cts)
 		{
 			ft_Cntl = ft;
 
-			ft.
 			str_Name = str_name;
 
 			str_F_FullName = str_f_full;
@@ -300,17 +305,20 @@ namespace TeraLibrary
 			cts_Cancel = _cts;
 		}
 
-		public void CheckDirectory(Dictionary<string, FromTo_Data> dic_FT)
+		public void CheckDirectory(
+			Dictionary<string, FromTo_Data2> dic_FT, Dictionary<FromTo_Data2, FT_Flag2> dic_Flag,
+			ref long long_f_sumisize, ref long long_t_sumisize,
+			ref long long_f_filesize, ref long long_t_filesize)
 		{
 			var token = cts_Cancel.Token;
 
-			ft_Datas = new List<FromTo_Data>();
+			ft_Datas = new List<FromTo_Data2>();
 
 			foreach (var c_a_dir in Directory.GetFiles(str_F_FullName))
 			{
 				var name = GetFileName(c_a_dir);
 
-				var ft_data = new FromTo_Data(
+				var ft_data = new FromTo_Data2(
 					ft_Cntl, false, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
@@ -318,7 +326,10 @@ namespace TeraLibrary
 					return;
 				}
 
-				ft_data.CheckFile(dic_FT);
+				ft_data.CheckFile(
+					dic_FT, dic_Flag,
+					ref long_f_sumisize, ref long_t_sumisize,
+					ref long_f_filesize, ref long_t_filesize);
 
 				ft_Datas.Add(ft_data);
 
@@ -333,7 +344,7 @@ namespace TeraLibrary
 			{
 				var name = GetFileName(c_a_dir);
 
-				var ft_data = new FromTo_Data(
+				var ft_data = new FromTo_Data2(
 					ft_Cntl, true, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
@@ -341,7 +352,10 @@ namespace TeraLibrary
 					return;
 				}
 
-				ft_data.CheckDirectory(dic_FT);
+				ft_data.CheckDirectory(
+					dic_FT, dic_Flag,
+					ref long_f_sumisize, ref long_t_sumisize,
+					ref long_f_filesize, ref long_t_filesize);
 
 				ft_Datas.Add(ft_data);
 
@@ -359,10 +373,13 @@ namespace TeraLibrary
 			dic_FT.Add(str_F_FullName, this);
 		}
 
-		public void CheckFile(Dictionary<string, FromTo_Data> dic_AB)
+		public void CheckFile(
+			Dictionary<string, FromTo_Data2> dic_AB, Dictionary<FromTo_Data2, FT_Flag2> dic_Flag,
+			ref long long_f_sumisize, ref long long_t_sumisize,
+			ref long long_f_filesize, ref long long_t_filesize)
 		{
-			ft_Cntl.long_F_SumiSize += long_F_Length;
-			ft_Cntl.long_F_FileSize++;
+			long_f_sumisize += long_F_Length;
+			long_f_filesize++;
 
 			if (File.Exists(str_T_FullName))
 			{
@@ -370,8 +387,8 @@ namespace TeraLibrary
 				{
 					bool_CopyEnd = true;
 
-					ft_Cntl.long_T_SumiSize += long_T_Length;
-					ft_Cntl.long_T_FileSize++;
+					long_t_sumisize += long_T_Length;
+					long_t_filesize++;
 
 					ft_Cntl.str_T_FileName = str_Name;//GetFileName(str_T_FullName);
 				}
@@ -384,7 +401,7 @@ namespace TeraLibrary
 			dic_AB.Add(str_F_FullName, this);
 		}
 
-		public void Copy()
+		public void Copy(ref long long_length, ref long long_files)
 		{
 			var token = cts_Cancel.Token;
 
@@ -415,7 +432,7 @@ namespace TeraLibrary
 
 					foreach (var ft_data in ft_Datas)
 					{
-						ft_data.Copy();
+						ft_data.Copy(ref long_length, ref long_files);
 
 						if (token.IsCancellationRequested)
 						{
@@ -449,8 +466,8 @@ namespace TeraLibrary
 								{
 									bool_CopyEnd = true;
 
-									ft_Cntl.long_T_SumiSize += long_T_Length;
-									ft_Cntl.long_T_FileSize++;
+									long_length += long_T_Length;
+									long_files++;
 								}
 							}
 							else
@@ -591,6 +608,17 @@ namespace TeraLibrary
 			}
 
 			return list[list.Count() - 1];
+		}
+	}
+
+	public class FT_Flag2
+	{
+		public bool bool_EndFlag = false;
+
+
+		public FT_Flag2()
+		{
+
 		}
 	}
 }

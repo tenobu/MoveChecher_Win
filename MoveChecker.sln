@@ -5,10 +5,6 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveChecker", "MoveChecker\MoveChecker.csproj", "{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveCk", "MoveCk\MoveCk.csproj", "{7B79D6C0-AB36-4E0A-9358-BAD89FECE35B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeraLibrary", "TeraLibrary\TeraLibrary.csproj", "{0E881E79-0679-408C-B8CB-BA4186968352}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,14 +15,6 @@ Global
 		{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B79D6C0-AB36-4E0A-9358-BAD89FECE35B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B79D6C0-AB36-4E0A-9358-BAD89FECE35B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B79D6C0-AB36-4E0A-9358-BAD89FECE35B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B79D6C0-AB36-4E0A-9358-BAD89FECE35B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E881E79-0679-408C-B8CB-BA4186968352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E881E79-0679-408C-B8CB-BA4186968352}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E881E79-0679-408C-B8CB-BA4186968352}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E881E79-0679-408C-B8CB-BA4186968352}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

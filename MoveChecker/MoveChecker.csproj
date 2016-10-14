@@ -66,6 +66,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Directory_Controller.cs" />
+    <Compile Include="FromTo_Controller.cs" />
+    <Compile Include="FromTo_Controller2.cs" />
+    <Compile Include="FromTo_Controller3.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

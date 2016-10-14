@@ -17,8 +17,6 @@ using System.IO;
 using Microsoft.Win32;
 using win = System.Windows.Forms;
 
-using TeraLibrary;
-
 namespace MoveChecker
 {
 	/// <summary>
