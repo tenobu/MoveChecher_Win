@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoveChecker", "MoveChecker\MoveChecker.csproj", "{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeraLibrary.MoveChecker", "TeraLibrary.MoveChecker\TeraLibrary.MoveChecker.csproj", "{74956C72-4131-4EFD-93C0-82A053DC7A17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEC339ED-A8C1-4DC8-BDA4-90FE7A366A15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74956C72-4131-4EFD-93C0-82A053DC7A17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74956C72-4131-4EFD-93C0-82A053DC7A17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74956C72-4131-4EFD-93C0-82A053DC7A17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74956C72-4131-4EFD-93C0-82A053DC7A17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

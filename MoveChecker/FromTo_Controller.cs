@@ -9,14 +9,17 @@ using System.Runtime.Serialization;
 using System.Threading;
 //using System.Threading.Tasks;
 
+using TeraLibrary.MoveChecker.SQLite;
+
 namespace MoveChecker
 {
 	public class FromTo_Controller
 	{
 		// 簡素化３
-		public string str_Name = "", str_Message = "", str_Status = "", str_Error = "";
+		public string str_Name = "", str_Message = ""/*, str__Status = ""*/, str_Error = "";
 		public bool bool_EndFlag = false;
 
+		public long long_F_DirsSize = 0L;
 		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;
 		public long long_F_FileSize = 0L, long_T_FileSize = 0L;
 
@@ -30,20 +33,27 @@ namespace MoveChecker
 
 		private CancellationTokenSource cts_Cancel = new CancellationTokenSource();
 
+		public _Level  _level  = _Level .None;
+		public _Status _status = _Status.None;
 
+		private Lite_FolderGroup _FolderGroup = null;
+
+	
 		// FromTo_Cntl(string f_path, string t_path)
 		// 
 		//
 		public FromTo_Controller(string f_path, string t_base_path)
 		{
-			bool_WaitFlag = true;
+			FromTo_Data.ft_Cntl = this;
 
-			str_Status = "Normal";
+			_level = _Level.Check;
+
+			_status = _Status.Normal;
 
 			if (Directory.Exists(f_path) == false)
 			{
 				str_Error = "From がディレクトリで無い！！";
-				str_Status = "Abend";
+				_status = _Status.Abend;
 				bool_WaitFlag = false;
 				return;
 			}
@@ -53,7 +63,7 @@ namespace MoveChecker
 			if (Directory.Exists(t_base_path) == false)
 			{
 				str_Error = "ToBase がディレクトリで無い！！";
-				str_Status = "Abend";
+				_status = _Status.Abend;
 				bool_WaitFlag = false;
 				return;
 			}
@@ -64,27 +74,101 @@ namespace MoveChecker
 				di_a.FullName.Equals(di_b.FullName))
 			{
 				str_Error = "同じディレクトリ！！";
-				str_Status = "Abend";
+				_status = _Status.Abend;
 				bool_WaitFlag = false;
 				return;
 			}
+
+			var cnt = Lite_FolderGroup.SelectFromCount();
+			if (cnt == -1)
+			{
+				Lite_FolderGroup.CommandNonQuery(Lite_FolderGroup.CreateTableString());
+			}
+
+			cnt = Lite_Folder.SelectFromCount();
+			if (cnt == -1)
+			{
+				Lite_Folder.CommandNonQuery(Lite_Folder.CreateTableString());
+			}
+
+			cnt = Lite_File.SelectFromCount();
+			if (cnt == -1)
+			{
+				Lite_File.CommandNonQuery(Lite_File.CreateTableString());
+			}
+
+			var list = Lite_FolderGroup.SelectFromFromTo(f_path, t_base_path);
+			if (list.Count == 0)
+			{
+				var l = new Lite_FolderGroup(f_path, t_base_path);
+
+				if (Lite_FolderGroup.Insert(l))
+				{
+					_FolderGroup = l;
+				}
+				else
+				{
+					new Exception();
+				}
+			}
+			else if (
+				list.Count == 1)
+			{
+				_FolderGroup = list[0];
+			}
+			else
+			{
+				Console.WriteLine("list count >= 2");
+				new Exception("list count >= 2");
+			}
+
+			_FolderGroup.CheckFolder();
 
 			dic_FT   = new Dictionary<string , FromTo_Data>();
 
 			str_Name = di_a.Name;
 
-			ft_Data = new FromTo_Data(this, true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
+			ft_Data = new FromTo_Data(true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
 		}
+
+		private void CheckDirectory()
+		{
+			//var di = new DirectoryInfo(_FolderGroup.FromFolder);
+
+			//DirectorySize(di);
+		}
+
+		/*private void DirectorySize(DirectoryInfo directoryInfo)
+		{
+			if (cts_Cancel.Token.IsCancellationRequested)
+			{
+				return;
+			}
+
+			foreach (var fi in directoryInfo.EnumerateFiles())
+			{
+				var l = new Lite_File(_FolderGroup.guid, fi.FullName);
+			}
+
+			long totalSize = directoryInfo.EnumerateFiles().Sum(file => file.Length);
+
+			foreach (var dir in directoryInfo.EnumerateDirectories())
+			{
+				DirectorySize(dir);
+			}
+
+			//ft_Cntl.long_F_DirsSize += totalSize;
+		}*/
 
 		public void Check()
 		{
 			bool_WaitFlag = true;
 
 			str_Message = "フォルダ？をチェック中！！";
-			str_Status  = "Normal";
+			_status = _Status.Normal;
 
 			//var end_flag = true;
-			long_F_SumiSize = long_T_SumiSize = 0L;
+			long_F_DirsSize = long_F_SumiSize = long_T_SumiSize = 0L;
 
 			var token = cts_Cancel.Token;
 
@@ -92,37 +176,32 @@ namespace MoveChecker
 
 				try
 				{
-					bool_EndFlag &= ft_Data.CheckDirectory(/*dic_FT*/);
+					ft_Data.CheckDirectory_0();
+
+					if (token.IsCancellationRequested)
+					{
+						str_Error = "Error Cancelされました！！";
+						_status = _Status.Abend;
+
+						return;
+					}
+					
+					bool_EndFlag &= ft_Data.CheckDirectory();
 
 					if (token.IsCancellationRequested)
 					{
 						str_Error  = "Error Cancelされました！！";
-						str_Status = "Abend";
+						_status = _Status.Abend;
 
 						return;
 					}
-
-					/*foreach (var ft_d in dic_FT.Values)
-					{
-						if (end_flag && ft_d.bool_CopyEnd == false) end_flag = false;
-
-						if (token.IsCancellationRequested)
-						{
-							str_Error  = "Error Cancelされました！！";
-							str_Status = "Abend";
-
-							return;
-						}
-					}*/
-
-					//bool_EndFlag = end_flag;
 
 					Console.WriteLine("End = " + bool_EndFlag);
 				}
 				catch(Exception e)
 				{
 					str_Error  = "Error From " + e.Message;
-					str_Status = "Abend";
+					_status = _Status.Abend;
 				}
 				finally
 				{
@@ -138,7 +217,7 @@ namespace MoveChecker
 			bool_WaitFlag = true;
 
 			str_Message = "コピー中！！";
-			str_Status  = "Normal";
+			_status = _Status.Normal;
 
 			var token = cts_Cancel.Token;
 
@@ -154,7 +233,7 @@ namespace MoveChecker
 					if (token.IsCancellationRequested)
 					{
 						str_Error  = "Error Cancelされました！！";
-						str_Status = "Abend";
+						_status = _Status.Abend;
 
 						return;
 					}
@@ -168,7 +247,7 @@ namespace MoveChecker
 				catch (Exception e)
 				{
 					str_Error = "Error To " + e.Message;
-					str_Status = "Abend";
+					_status = _Status.Abend;
 				}
 				finally
 				{
@@ -183,7 +262,7 @@ namespace MoveChecker
 			bool_WaitFlag = true;
 
 			str_Message = "削除中！！";
-			str_Status  = "Normal";
+			_status = _Status.Normal;
 
 			var token = cts_Cancel.Token;
 
@@ -239,7 +318,7 @@ namespace MoveChecker
 				catch (Exception e)
 				{
 					str_Error = "Error From " + e.Message;
-					str_Status = "Abend";
+					_status = _Status.Abend;
 				}
 				finally
 				{
@@ -257,7 +336,7 @@ namespace MoveChecker
 
 	public class FromTo_Data
 	{
-		public FromTo_Controller ft_Cntl = null;
+		static public FromTo_Controller ft_Cntl = null;
 
 		public string str_Type = "";
 		public string str_Name = "", str_F_FullName = "", str_T_FullName = "";
@@ -270,12 +349,9 @@ namespace MoveChecker
 
 
 		public FromTo_Data(
-			FromTo_Controller ft, bool is_dir, string str_name, string str_f_full, string str_t_full,
+			bool is_dir, string str_name, string str_f_full, string str_t_full,
 			CancellationTokenSource _cts)
 		{
-			ft_Cntl = ft;
-
-			ft.
 			str_Name = str_name;
 
 			str_F_FullName = str_f_full;
@@ -301,7 +377,58 @@ namespace MoveChecker
 			cts_Cancel = _cts;
 		}
 
-		public bool CheckDirectory(/*Dictionary<string, FromTo_Data> dic_FT*/)
+		public void CheckDirectory_0()
+		{
+			var di = new DirectoryInfo(str_F_FullName);
+
+			//ft_Cntl.long_F_DirsSize = DirectorySize_1(di);
+			DirectorySize_2(di);
+		}
+
+		private long DirectorySize_1(DirectoryInfo directoryInfo)
+		{
+			/*long totalSize = directoryInfo.EnumerateFiles().Sum(file => file.Length);
+
+			totalSize += directoryInfo.EnumerateDirectories().Sum(dir => DirectorySize(dir));
+
+			return totalSize;*/
+
+			if (cts_Cancel.Token.IsCancellationRequested)
+			{
+				return 0;
+			}
+
+			long totalSize = directoryInfo.EnumerateFiles().Sum(file => file.Length);
+
+			directoryInfo.EnumerateDirectories().Sum(dir => DirectorySize_1(dir));
+
+			ft_Cntl.long_F_DirsSize += totalSize;
+
+			return totalSize;
+		}
+
+		private void DirectorySize_2(DirectoryInfo directoryInfo)
+		{
+			if (cts_Cancel.Token.IsCancellationRequested)
+			{
+				return;
+			}
+
+			long totalSize = directoryInfo.EnumerateFiles().Sum(file => file.Length);
+
+			/*directoryInfo.EnumerateDirectories(
+				dir => DirectorySize_2(dir)
+			);*/
+
+			foreach (var dir in directoryInfo.EnumerateDirectories())
+			{
+				DirectorySize_2(dir);
+			}
+			
+			ft_Cntl.long_F_DirsSize += totalSize;
+		}
+
+		public bool CheckDirectory()
 		{
 			var token = cts_Cancel.Token;
 
@@ -315,7 +442,7 @@ namespace MoveChecker
 				var name = GetFileName(c_a_dir);
 
 				var ft_data = new FromTo_Data(
-					ft_Cntl, false, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
+					false, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
 				{
@@ -338,7 +465,7 @@ namespace MoveChecker
 				var name = GetFileName(c_a_dir);
 
 				var ft_data = new FromTo_Data(
-					ft_Cntl, true, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
+					true, name, c_a_dir, str_T_FullName + @"\" + name, cts_Cancel);
 
 				if (token.IsCancellationRequested)
 				{

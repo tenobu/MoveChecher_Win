@@ -17,6 +17,9 @@ using System.IO;
 using Microsoft.Win32;
 using win = System.Windows.Forms;
 
+using TeraLibrary.MoveChecker;
+using TeraLibrary.MoveChecker.SQLite;
+
 namespace MoveChecker
 {
 	/// <summary>
@@ -273,13 +276,13 @@ namespace MoveChecker
 						{
 							if (ft_Cntl.long_F_SumiSize == 0L && ft_Cntl.long_T_SumiSize == 0L)
 							{
-								label_From_FilesSize.Content = "？ Byte";
+								label_From_FilesSize.Content = "？/？ Byte";
 								label_To_FilesSize  .Content = "？ Byte";
 								textBlock_File      .Text    = "?";
 							}
 							else
 							{
-								label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+								label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 / "  ) + ft_Cntl.long_F_DirsSize.ToString("#,#0 Byte");
 								label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 								textBlock_File      .Text    = ft_Cntl.str_T_FileName;
 							}
@@ -349,7 +352,7 @@ namespace MoveChecker
 					{
 						SetProgress();
 
-						if (ft_Cntl.str_Status.Equals("Abend"))
+						if (ft_Cntl._status.Equals("Abend"))
 						{
 							image_Hatena.Visibility    = Visibility.Hidden;
 							image_Equals.Visibility    = Visibility.Hidden;
@@ -363,7 +366,7 @@ namespace MoveChecker
 							button_Cancel.IsEnabled = false;
 						}
 						else if (
-							ft_Cntl.str_Status.Equals("Normal"))
+							ft_Cntl._status == _Status.Normal)
 						{
 							if (ft_Cntl.bool_EndFlag)
 							{
@@ -448,7 +451,7 @@ namespace MoveChecker
 						{
 							SetProgress();
 
-							if (ft_Cntl.str_Status.Equals("Abend"))
+							if (ft_Cntl._status.Equals("Abend"))
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
 								image_Equals.Visibility    = Visibility.Hidden;
@@ -462,7 +465,7 @@ namespace MoveChecker
 								button_Cancel.IsEnabled = false;
 							}
 							else if (
-								ft_Cntl.str_Status.Equals("Normal"))
+								ft_Cntl._status.Equals("Normal"))
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
 								image_Equals.Visibility    = Visibility.Visible;
@@ -514,10 +517,10 @@ namespace MoveChecker
 					this.label_Hantei.Dispatcher.BeginInvoke(
 						new Action(() =>
 						{
-							label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+							label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 / "  ) + ft_Cntl.long_F_DirsSize.ToString("#,#0 Byte");
 							label_To_FilesSize.Content   = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 
-							if (ft_Cntl.str_Status.Equals("Abend"))
+							if (ft_Cntl._status.Equals("Abend"))
 							{
 								image_Hatena.Visibility    = Visibility.Hidden;
 								image_Equals.Visibility    = Visibility.Hidden;
@@ -526,7 +529,7 @@ namespace MoveChecker
 								label_Hantei.Content = ft_Cntl.str_Error;
 							}
 							else if (
-								ft_Cntl.str_Status.Equals("Normal"))
+								ft_Cntl._status.Equals("Normal"))
 							{
 								if (ft_Cntl.bool_EndFlag)
 								{
@@ -598,7 +601,7 @@ namespace MoveChecker
 		{
 			label_Hantei        .Content = ft_Cntl.str_Message;
 
-			label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 Byte");
+			label_From_FilesSize.Content = ft_Cntl.long_F_SumiSize.ToString("#,#0 / "  ) + ft_Cntl.long_F_DirsSize.ToString("#,#0 Byte");
 			label_To_FilesSize  .Content = ft_Cntl.long_T_SumiSize.ToString("#,#0 Byte");
 
 			textBlock_File      .Text    = ft_Cntl.str_T_FileName;
