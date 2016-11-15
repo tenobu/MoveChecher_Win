@@ -90,6 +90,10 @@
     <Compile Include="FromTo_Controller.cs" />
     <Compile Include="FromTo_Controller2.cs" />
     <Compile Include="FromTo_Controller3.cs" />
+    <Compile Include="Lite\Lite_Default.cs" />
+    <Compile Include="Lite\Lite_File.cs" />
+    <Compile Include="Lite\Lite_Folder.cs" />
+    <Compile Include="Lite\Lite_FolderGroup.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

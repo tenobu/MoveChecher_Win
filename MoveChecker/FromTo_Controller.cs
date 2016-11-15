@@ -9,6 +9,8 @@ using System.Runtime.Serialization;
 using System.Threading;
 //using System.Threading.Tasks;
 
+using MoveChecker.Lite;
+
 using TeraLibrary.MoveChecker.SQLite;
 
 namespace MoveChecker
@@ -19,7 +21,9 @@ namespace MoveChecker
 		public string str_Name = "", str_Message = ""/*, str__Status = ""*/, str_Error = "";
 		public bool bool_EndFlag = false;
 
-		public long long_F_DirsSize = 0L;
+		private string str_From = "", str_ToBase = "";
+
+		private long long_F_DirsSize = 0L;
 		public long long_F_SumiSize = 0L, long_T_SumiSize = 0L;
 		public long long_F_FileSize = 0L, long_T_FileSize = 0L;
 
@@ -79,6 +83,13 @@ namespace MoveChecker
 				return;
 			}
 
+			str_From   = f_path;
+			str_ToBase = t_base_path;
+		}
+
+		public void FromFolder()
+		{
+			#region FolderGroup・Folder・File 作成
 			var cnt = Lite_FolderGroup.SelectFromCount();
 			if (cnt == -1)
 			{
@@ -96,11 +107,13 @@ namespace MoveChecker
 			{
 				Lite_File.CommandNonQuery(Lite_File.CreateTableString());
 			}
+			#endregion
 
-			var list = Lite_FolderGroup.SelectFromFromTo(f_path, t_base_path);
+
+			var list = Lite_FolderGroup.SelectFromFromTo(str_From, str_ToBase);
 			if (list.Count == 0)
 			{
-				var l = new Lite_FolderGroup(f_path, t_base_path);
+				var l = new Lite_FolderGroup(str_From, str_ToBase);
 
 				if (Lite_FolderGroup.Insert(l))
 				{
@@ -114,7 +127,17 @@ namespace MoveChecker
 			else if (
 				list.Count == 1)
 			{
-				_FolderGroup = list[0];
+				var l = list[0];
+
+				if (Directory.Exists(l.FromFolder) == false)
+				{
+					str_Error = "Fromディレクトリが記録と違う！！";
+					_status = _Status.Abend;
+					bool_WaitFlag = false;
+					return;
+				}
+
+				_FolderGroup = l;
 			}
 			else
 			{
@@ -124,11 +147,25 @@ namespace MoveChecker
 
 			_FolderGroup.CheckFolder();
 
-			dic_FT   = new Dictionary<string , FromTo_Data>();
+			//dic_FT   = new Dictionary<string , FromTo_Data>();
 
-			str_Name = di_a.Name;
+			//str_Name = di_a.Name;
 
-			ft_Data = new FromTo_Data(true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
+			//ft_Data = new FromTo_Data(true, di_a.Name, di_a.FullName, di_b.FullName, cts_Cancel);
+		}
+
+		public long Long_F_DirsSize
+		{
+			get
+			{
+				long_F_DirsSize = Lite_FolderGroup.long_DirsSize;
+
+				return long_F_DirsSize;
+			}
+			set
+			{
+				value = long_F_DirsSize;
+			}
 		}
 
 		private void CheckDirectory()
@@ -176,6 +213,68 @@ namespace MoveChecker
 
 				try
 				{
+					#region FolderGroup・Folder・File 作成
+					var cnt = Lite_FolderGroup.SelectFromCount();
+					if (cnt == -1)
+					{
+						Lite_FolderGroup.CommandNonQuery(Lite_FolderGroup.CreateTableString());
+					}
+
+					cnt = Lite_Folder.SelectFromCount();
+					if (cnt == -1)
+					{
+						Lite_Folder.CommandNonQuery(Lite_Folder.CreateTableString());
+					}
+
+					cnt = Lite_File.SelectFromCount();
+					if (cnt == -1)
+					{
+						Lite_File.CommandNonQuery(Lite_File.CreateTableString());
+					}
+					#endregion
+
+
+					var list = Lite_FolderGroup.SelectFromFromTo(str_From, str_ToBase);
+					if (list.Count == 0)
+					{
+						var l = new Lite_FolderGroup(str_From, str_ToBase);
+
+						if (Lite_FolderGroup.Insert(l))
+						{
+							_FolderGroup = l;
+						}
+						else
+						{
+							new Exception();
+						}
+					}
+					else if (
+						list.Count == 1)
+					{
+						var l = list[0];
+
+						if (Directory.Exists(l.FromFolder) == false)
+						{
+							str_Error = "Fromディレクトリが記録と違う！！";
+							_status = _Status.Abend;
+							bool_WaitFlag = false;
+							return;
+						}
+
+						_FolderGroup = l;
+					}
+					else
+					{
+						Console.WriteLine("list count >= 2");
+						new Exception("list count >= 2");
+					}
+
+					_FolderGroup.CheckFolder();
+
+		
+					
+					
+					
 					ft_Data.CheckDirectory_0();
 
 					if (token.IsCancellationRequested)
@@ -402,7 +501,7 @@ namespace MoveChecker
 
 			directoryInfo.EnumerateDirectories().Sum(dir => DirectorySize_1(dir));
 
-			ft_Cntl.long_F_DirsSize += totalSize;
+			ft_Cntl.Long_F_DirsSize += totalSize;
 
 			return totalSize;
 		}
@@ -425,7 +524,7 @@ namespace MoveChecker
 				DirectorySize_2(dir);
 			}
 			
-			ft_Cntl.long_F_DirsSize += totalSize;
+			ft_Cntl.Long_F_DirsSize += totalSize;
 		}
 
 		public bool CheckDirectory()
